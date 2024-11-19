@@ -1,0 +1,13 @@
+python3 -m venv p3
+source p3/bin/activate
+python3 -m pip install plotly
+python3 -m pip install pandas
+python3 -m pip install bson
+python3 -m pip install bcrypt
+python3 -m pip install flask
+python3 -m pip install flask_mail
+python3 -m pip install flask_pymongo
+python3 -m pip install tabulate
+python3 -m pip install flask_wtf
+python3 -m pip install wtforms
+python3 application.py       
