@@ -1,6 +1,6 @@
 
 """
-Copyright (c) 2024 Shardul Rajesh Khare, Shruti Dhond, Pranav Manbhekar
+Copyright (c) 2024 Naga Buddarapu and Youbin Kim
 This code is licensed under MIT license (see LICENSE for details)
 
 @author: Burnout
