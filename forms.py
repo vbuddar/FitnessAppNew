@@ -19,7 +19,7 @@ https://github.com/SEFall24-Team61/FitnessAppNew
 """Importing modules to create forms"""
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, DecimalField, DateField,FloatField, TextAreaField, SubmitField, IntegerField
-from wtforms.fields.core import DateField, SelectField
+from wtforms.fields import DateField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Optional, NumberRange
 from apps import App
 

@@ -213,9 +213,9 @@ def register():
         form.coach.choices = coach_choices
         
         print("Request method:", request.method)  # Debugging
-        print("Form validate_on_submit result:", form.validate_on_submit())  # Debugging
+        print("Form validate_on_submit result:", form.validate())  # Debugging
         print("Form Data", form.data )
-        if form.validate_on_submit() and request.method == 'POST':
+        if form.validate() and request.method == 'POST':
             print("Form validated successfully")  # Debugging
             # Check for existing user to prevent duplicates
             if mongo.db.user.find_one({"email": form.email.data}):
