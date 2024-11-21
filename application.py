@@ -2144,7 +2144,7 @@ def get_recipes():
     # Rotate recipes randomly and limit to 3 suggestions
     suggested_recipes = random.sample(filtered_recipes, min(3, len(filtered_recipes)))
 
-    return jsonify(suggested_recipes)
+    return render_template('results.html', recipes=suggested_recipes)
 
 
 
