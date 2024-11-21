@@ -247,7 +247,13 @@ def feeling_tracker():
         if user:
             # Extract the feelings data from the user's document
             feelings_data = user.get('feelings', [])  # Get the feelings array, default to an empty list if not present
-            print("Test:", feelings_data)
+            print("tracker:     ",feelings_data)
+            # Sort feelings by date in descending order (latest first)
+            feelings_data.sort(key=lambda x: x['date'], reverse=True)
+
+            # Get the latest feeling (if any)
+            latest_feeling = feelings_data[0] if feelings_data else None
+
             # Convert the data to a format suitable for the chart
             feelings = []
             for data in feelings_data:
@@ -256,8 +262,8 @@ def feeling_tracker():
                     'feeling': data['feeling']  # The feeling value (1-5 scale)
                 })
             
-            # Pass the feelings data to the template
-            return render_template('feeling_tracker.html', feelings=feelings)
+            # Pass the feelings data and latest feeling to the template
+            return render_template('feeling_tracker.html', feelings=feelings, latest_feeling=latest_feeling)
         else:
             flash('No user found!', 'danger')
             return redirect(url_for('login'))
