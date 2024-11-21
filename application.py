@@ -206,6 +206,34 @@ def feeling_and_goal():
 
     return render_template('feeling_and_goal.html', title='Your Feelings and Goals')
 
+@app.route("/feeling_tracker")
+def feeling_tracker():
+    # Fetch the feeling data from MongoDB for the logged-in user
+    user_email = session.get("email")
+    if user_email:
+        # Query MongoDB to get the user document
+        user = mongo.db.user.find_one({'email': user_email})
+        
+        if user:
+            # Extract the feelings data from the user's document
+            feelings_data = user.get('feelings', [])  # Get the feelings array, default to an empty list if not present
+            print("Test:", feelings_data)
+            # Convert the data to a format suitable for the chart
+            feelings = []
+            for data in feelings_data:
+                feelings.append({
+                    'date': data['date'],  # The date when the feeling was logged
+                    'feeling': data['feeling']  # The feeling value (1-5 scale)
+                })
+            
+            # Pass the feelings data to the template
+            return render_template('feeling_tracker.html', feelings=feelings)
+        else:
+            flash('No user found!', 'danger')
+            return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
+
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
     """
