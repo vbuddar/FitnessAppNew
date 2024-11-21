@@ -200,6 +200,22 @@ def feeling_and_goal():
     if not session.get('email'):
         return redirect(url_for('login'))
 
+    # Fetch the user data from the database
+    user_email = session.get('email')
+    user = mongo.db.user.find_one({'email': user_email})
+
+    if user:
+        # Get the feelings data
+        feelings_data = user.get('feelings', [])
+        
+        # Check if the user has already submitted their feeling for today
+        today = datetime.today().date()  # Get today's date
+        already_submitted_today = any(f['date'].date() == today for f in feelings_data)
+
+        # If the user already has a feeling for today, redirect them to the feeling tracker
+        if already_submitted_today:
+            return redirect(url_for('feeling_tracker'))
+
     if request.method == 'POST':
         feeling = request.form.get('feeling')  # Get the feeling value from the hidden input field
 
