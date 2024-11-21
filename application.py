@@ -181,6 +181,30 @@ def login():
 
     return render_template('login.html', title='Login', form=form)
 
+@app.route("/feeling-and-goal", methods=['GET', 'POST'])
+def feeling_and_goal():
+    if not session.get('email'):
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        feeling = request.form.get('feeling')  # Get the feeling value from the hidden input field
+
+        # Insert user's feeling into the database if a feeling is selected
+        if feeling:
+            mongo.db.user.update_one(
+                {'email': session['email']},
+                {'$push': {'feelings': {'date': datetime.now(), 'feeling': int(feeling)}}}
+            )
+            flash('Your feeling has been submitted!', 'success')  # Optional feedback after submission
+
+        # Redirect based on user type
+        user = mongo.db.user.find_one({'email': session['email']}, {'user_type'})
+        if user.get('user_type') == 'coach':
+            return redirect(url_for('coach_dashboard'))
+        else:
+            return redirect(url_for('dashboard'))
+
+    return render_template('feeling_and_goal.html', title='Your Feelings and Goals')
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
