@@ -33,6 +33,8 @@ import time
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
+import random
+
 
 app = Flask(__name__, template_folder='templates', static_url_path='/static')
 app.secret_key = 'secret'
@@ -50,6 +52,119 @@ mail = Mail(app)
 insertfooddata()
 insertexercisedata()
 coaching_videos()
+
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+# Example user-recipe interaction data
+data = {
+    "user_id": [1, 1, 2, 2, 3, 3],
+    "recipe_id": [101, 102, 101, 103, 102, 104],
+    "rating": [5, 4, 5, 3, 4, 5],  # User ratings for recipes
+}
+
+# Convert to DataFrame
+interactions = pd.DataFrame(data)
+
+# Create a user-item matrix
+user_item_matrix = interactions.pivot_table(index="user_id", columns="recipe_id", values="rating").fillna(0)
+
+# Calculate cosine similarity between users
+user_similarity = cosine_similarity(user_item_matrix)
+user_similarity_df = pd.DataFrame(user_similarity, index=user_item_matrix.index, columns=user_item_matrix.index)
+
+def recommend_recipes_cf(user_id, top_n=3):
+    """
+    Recommend recipes for a user using collaborative filtering.
+
+    Args:
+    - user_id: ID of the user for whom recommendations are made.
+    - top_n: Number of recommendations to return.
+
+    Returns:
+    - List of recommended recipe IDs.
+    """
+    # Get user's similarity scores with other users
+    user_similarities = user_similarity_df[user_id]
+    
+    # Multiply similarity scores with user-item matrix to predict ratings
+    weighted_ratings = np.dot(user_similarities, user_item_matrix)
+    predicted_ratings = pd.Series(weighted_ratings, index=user_item_matrix.columns)
+    
+    # Exclude recipes already rated by the user
+    already_rated = user_item_matrix.loc[user_id][user_item_matrix.loc[user_id] > 0].index
+    predicted_ratings = predicted_ratings.drop(already_rated)
+    
+    # Return top N recipe recommendations
+    return predicted_ratings.nlargest(top_n).index.tolist()
+
+# Example user ID
+user_id = 1
+recommended_recipes = recommend_recipes_cf(user_id)
+print("Recommended Recipe IDs:", recommended_recipes)
+
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import pandas as pd
+
+# Example recipe data
+recipes = [
+    {
+        "name": "Grilled Chicken Salad",
+        "ingredients": "chicken breast, lettuce, cherry tomatoes, olive oil, lemon juice",
+        "type": "lunch",
+        "goal": "muscle_gain weight_loss",
+    },
+    {
+        "name": "Greek Yogurt Parfait",
+        "ingredients": "greek yogurt, granola, mixed berries",
+        "type": "snack",
+        "goal": "maintenance weight_loss",
+    },
+    {
+        "name": "Avocado Toast",
+        "ingredients": "whole-grain bread, avocado, salt, pepper, lemon",
+        "type": "breakfast",
+        "goal": "maintenance weight_loss",
+    },
+]
+
+# Convert to DataFrame for easier manipulation
+df = pd.DataFrame(recipes)
+
+# Combine attributes into a single "content" field
+df["content"] = df["ingredients"] + " " + df["type"] + " " + df["goal"]
+
+# Create a TF-IDF vectorizer and transform the content
+tfidf = TfidfVectorizer(stop_words="english")
+tfidf_matrix = tfidf.fit_transform(df["content"])
+
+def recommend_recipes(query, top_n=3):
+    """
+    Recommend recipes based on user input using content-based filtering.
+
+    Args:
+    - query: A string describing the user's preferences (ingredients, type, goal).
+    - top_n: Number of recommendations to return.
+
+    Returns:
+    - List of recommended recipes.
+    """
+    query_tfidf = tfidf.transform([query])  # Transform the user query
+    cosine_sim = cosine_similarity(query_tfidf, tfidf_matrix)  # Calculate similarity
+    sim_scores = list(enumerate(cosine_sim[0]))  # Get similarity scores
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)  # Sort by similarity
+    top_indices = [i[0] for i in sim_scores[:top_n]]  # Get indices of top matches
+    return df.iloc[top_indices]["name"].tolist()
+
+# Example user query
+query = "chicken lunch muscle_gain"
+recommended_recipes = recommend_recipes(query)
+print("Recommended Recipes:", recommended_recipes)
+
 
 # data directory
 data_dir = os.path.join(os.path.dirname(__file__), 'data')
@@ -1966,6 +2081,87 @@ def student_plans():
 
     return render_template("student_plans.html", assigned_plans=assigned_plans)
 
+
+# Example recipes
+# Example recipes data
+recipes = [
+    {
+        "name": "Grilled Chicken Salad",
+        "ingredients": ["Chicken breast", "Lettuce", "Cherry tomatoes", "Olive oil", "Lemon juice"],
+        "steps": ["Grill the chicken breast.", "Chop lettuce and tomatoes.", "Mix and drizzle with olive oil."],
+        "calories": 350,
+        "macros": {"protein": 30, "carbs": 10, "fat": 15},
+        "goal": ["muscle_gain", "weight_loss"],
+        "type": "lunch"
+    },
+    {
+        "name": "Greek Yogurt Parfait",
+        "ingredients": ["Greek yogurt", "Granola", "Mixed berries"],
+        "steps": ["Layer Greek yogurt, granola, and mixed berries.", "Serve chilled."],
+        "calories": 200,
+        "macros": {"protein": 12, "carbs": 20, "fat": 5},
+        "goal": ["maintenance", "weight_loss"],
+        "type": "snack"
+    },
+    {
+        "name": "Avocado Toast",
+        "ingredients": ["Whole-grain bread", "Avocado", "Salt", "Pepper", "Lemon"],
+        "steps": ["Toast the bread.", "Spread mashed avocado on top.", "Season with salt, pepper, and lemon."],
+        "calories": 300,
+        "macros": {"protein": 6, "carbs": 40, "fat": 15},
+        "goal": ["maintenance", "weight_loss"],
+        "type": "breakfast"
+    },
+]
+
+@app.route('/recipes', methods=['GET'])
+def get_recipes():
+    """
+    Get recipes filtered by fitness goal and meal type.
+
+    Query Parameters:
+    - goal: The fitness goal (e.g., "muscle_gain", "weight_loss").
+    - type: Optional, the meal type (e.g., "breakfast", "lunch", "snack").
+
+    Returns:
+    - JSON list of suggested recipes.
+    """
+    # Get query parameters
+    goal = request.args.get('goal', 'maintenance')  # Default to 'maintenance'
+    meal_type = request.args.get('type', None)     # Optional meal type filter
+
+    # Filter recipes by fitness goal
+    filtered_recipes = [recipe for recipe in recipes if goal in recipe["goal"]]
+
+    # Further filter by meal type if specified
+    if meal_type:
+        filtered_recipes = [recipe for recipe in filtered_recipes if recipe["type"] == meal_type]
+
+    # Rotate recipes randomly and limit to 3 suggestions
+    suggested_recipes = random.sample(filtered_recipes, min(3, len(filtered_recipes)))
+
+    return jsonify(suggested_recipes)
+
+
+
+@app.route('/recipes_page')
+def recipes_page():
+    return render_template('recipes.html')  # Renders a separate page for Recipe Suggestions
+
+@app.route('/recommend_recipes', methods=['GET'])
+def recommend_recipes_route():
+    method = request.args.get("method", "content")  # Choose recommendation method
+    user_input = request.args.get("query", "")  # User input query
+    user_id = int(request.args.get("user_id", 0))  # For collaborative filtering
+    
+    if method == "content":
+        recommendations = recommend_recipes(user_input)
+    elif method == "collaborative" and user_id > 0:
+        recommendations = recommend_recipes_cf(user_id)
+    else:
+        return jsonify({"error": "Invalid method or user ID"}), 400
+    
+    return jsonify({"recommendations": recommendations})
 
 if __name__ == '__main__':
     app.run(debug=True)
