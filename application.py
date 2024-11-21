@@ -2087,6 +2087,7 @@ def student_plans():
 # Example Recipes
 recipes = [
     {
+        "id": 1,
         "name": "Grilled Chicken Salad",
         "ingredients": ["Chicken breast", "Lettuce", "Cherry tomatoes", "Olive oil", "Lemon juice"],
         "steps": ["Grill the chicken breast.", "Chop lettuce and tomatoes.", "Mix and drizzle with olive oil."],
@@ -2096,6 +2097,7 @@ recipes = [
         "type": "lunch"
     },
     {
+        "id": 2,
         "name": "Greek Yogurt Parfait",
         "ingredients": ["Greek yogurt", "Granola", "Mixed berries"],
         "steps": ["Layer Greek yogurt, granola, and mixed berries.", "Serve chilled."],
@@ -2105,6 +2107,7 @@ recipes = [
         "type": "snack"
     },
     {
+        "id": 3,
         "name": "Avocado Toast",
         "ingredients": ["Whole-grain bread", "Avocado", "Salt", "Pepper", "Lemon"],
         "steps": ["Toast the bread.", "Spread mashed avocado on top.", "Season with salt, pepper, and lemon."],
@@ -2114,7 +2117,6 @@ recipes = [
         "type": "breakfast"
     },
 ]
-
 
 @app.route('/recipes', methods=['GET'])
 def get_recipes():
@@ -2207,6 +2209,49 @@ def recommend_by_ingredients():
     recommended_recipes = df_recipes.iloc[similar_indices].to_dict(orient='records')
 
     return jsonify(recommended_recipes)
+
+user_interactions = pd.DataFrame([
+    {"user_id": 1, "recipe_id": 1, "rating": 5},
+    {"user_id": 1, "recipe_id": 2, "rating": 3},
+    {"user_id": 2, "recipe_id": 1, "rating": 4},
+    {"user_id": 2, "recipe_id": 3, "rating": 5},
+    {"user_id": 3, "recipe_id": 2, "rating": 4},
+    {"user_id": 3, "recipe_id": 3, "rating": 3},
+])
+
+# Collaborative Filtering Function
+def collaborative_filtering():
+    # Create a user-item matrix
+    user_item_matrix = user_interactions.pivot(index='user_id', columns='recipe_id', values='rating').fillna(0)
+
+    # Compute cosine similarity between recipes
+    recipe_similarity = cosine_similarity(user_item_matrix.T)  # Transpose to get recipe similarities
+    recipe_similarity_df = pd.DataFrame(recipe_similarity, index=user_item_matrix.columns, columns=user_item_matrix.columns)
+
+    # Calculate total interactions (popularity) for each recipe
+    popularity = user_item_matrix.sum(axis=0)
+
+    # Combine similarity and popularity for trending recommendations
+    trending_scores = popularity + recipe_similarity_df.sum(axis=1)
+    trending_recipes = trending_scores.sort_values(ascending=False).index.tolist()
+
+    # Map back to recipe details
+    trending_recipe_details = [recipe for recipe in recipes if recipe["id"] in trending_recipes]
+    return trending_recipe_details
+
+@app.route('/trending_recipes', methods=['GET'])
+def trending_recipes():
+    try:
+        # Get trending recipes using collaborative filtering
+        trending = collaborative_filtering()
+        return jsonify(trending)
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Error occurred in /trending_recipes: {error_details}")
+        return jsonify({"error": "An error occurred while fetching trending recipes.", "details": str(e)}), 500
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
