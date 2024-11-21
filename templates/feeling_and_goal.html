@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feeling & Goal</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000000;  /* Black background */
+            color: #ffffff;  /* White text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .modal {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #343a40;
+        }
+        .feeling-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .feeling-buttons button {
+            width: 60px;
+            height: 60px;
+            background-color: #6c757d;  /* Grey button */
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .feeling-buttons button:hover {
+            background-color: #5a636a;  /* Darker grey on hover */
+            transform: scale(1.1);  /* Slightly enlarge on hover */
+        }
+        .feeling-buttons .selected {
+            background-color: #28a745;  /* Green when selected */
+        }
+        .form-container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .form-container h2 {
+            margin-bottom: 15px;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        button {
+            background-color: #6c757d;  /* Grey button */
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #5a636a;  /* Darker grey on hover */
+        }
+        .back-home {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.875em;
+            color: #6c757d;  /* Grey text */
+        }
+        .back-home a {
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .back-home a:hover {
+            color: #5a636a;  /* Darker grey on hover */
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const feelingModal = document.querySelector('.form-container');
+            const feelingForm = document.querySelector('form');
+            const buttons = document.querySelectorAll('.feeling-button');
+            let selectedFeeling = null;
+
+            // When a button is clicked, set the value of the feeling and submit the form
+            buttons.forEach((button, index) => {
+                button.addEventListener('click', function() {
+                    if (selectedFeeling !== index + 1) {  // If a different feeling is selected
+                        selectedFeeling = index + 1;
+                        // Remove the "selected" class from all buttons
+                        buttons.forEach(b => b.classList.remove('selected'));
+                        // Add the "selected" class to the clicked button
+                        button.classList.add('selected');
+                        // Set the hidden input value
+                        document.querySelector('input[name="feeling"]').value = selectedFeeling;
+                    }
+                });
+            });
+
+            if (!sessionStorage.getItem('feelingSubmitted')) {
+                feelingModal.style.display = 'block';
+                feelingForm.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Prevent form submission for now to handle the button click
+                    if (selectedFeeling !== null) {
+                        // Submit the form data to the backend
+                        feelingForm.submit();  // Proceed with form submission
+                    } else {
+                        alert('Please select a feeling before submitting.');
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Welcome, {{ session['name'] }}</h1>
+
+        <!-- Feeling Form -->
+        <div id="feelingModal" class="modal">
+            <form method="POST" action="{{ url_for('feeling_and_goal') }}">
+                <h2>How are you feeling today?</h2>
+                <input type="hidden" name="feeling" required> <!-- Hidden input for feeling value -->
+
+                <!-- Feeling buttons displayed in a row -->
+                <div class="feeling-buttons">
+                    <button type="button" class="feeling-button" value="1">1</button>
+                    <button type="button" class="feeling-button" value="2">2</button>
+                    <button type="button" class="feeling-button" value="3">3</button>
+                    <button type="button" class="feeling-button" value="4">4</button>
+                    <button type="button" class="feeling-button" value="5">5</button>
+                </div>
+                <button type="submit">Submit Feeling</button> <!-- Submit Feeling button -->
+            </form>
+        </div>
+
+        <!-- Goal Reminder Form (without Acknowledge button) -->
+        <div id="goalModal" class="modal">
+            <h2>Don't forget your weekly goal!</h2>
+        </div>
+    </div>
+</body>
+</html>
