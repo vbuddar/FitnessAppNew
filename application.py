@@ -2084,6 +2084,7 @@ def student_plans():
 
 # Example recipes
 # Example recipes data
+# Example Recipes
 recipes = [
     {
         "name": "Grilled Chicken Salad",
@@ -2113,6 +2114,7 @@ recipes = [
         "type": "breakfast"
     },
 ]
+
 
 @app.route('/recipes', methods=['GET'])
 def get_recipes():
@@ -2162,6 +2164,49 @@ def recommend_recipes_route():
         return jsonify({"error": "Invalid method or user ID"}), 400
     
     return jsonify({"recommendations": recommendations})
+
+# Preprocess recipes into a DataFrame for easier manipulation
+df_recipes = pd.DataFrame(recipes)
+
+# Combine ingredients into a single string for each recipe
+df_recipes['ingredient_text'] = df_recipes['ingredients'].apply(lambda x: ' '.join(x))
+
+# Create TF-IDF matrix
+tfidf = TfidfVectorizer(stop_words='english')
+tfidf_matrix = tfidf.fit_transform(df_recipes['ingredient_text'])
+
+@app.route('/recommend_by_ingredients', methods=['GET'])
+def recommend_by_ingredients():
+    """
+    Recommend recipes based on ingredients of a selected recipe.
+
+    Query Parameters:
+    - recipe_name: Name of the recipe to base recommendations on.
+
+    Returns:
+    - JSON list of recommended recipes.
+    """
+    recipe_name = request.args.get('recipe_name')
+
+    if not recipe_name:
+        return jsonify({"error": "Please provide a recipe_name"}), 400
+
+    # Find the index of the recipe in the DataFrame
+    if recipe_name not in df_recipes['name'].values:
+        return jsonify({"error": "Recipe not found"}), 404
+
+    recipe_index = df_recipes[df_recipes['name'] == recipe_name].index[0]
+
+    # Compute similarity scores
+    cosine_similarities = cosine_similarity(tfidf_matrix[recipe_index], tfidf_matrix).flatten()
+
+    # Get indices of the top 3 most similar recipes (excluding itself)
+    similar_indices = cosine_similarities.argsort()[-4:-1][::-1]
+
+    # Retrieve the recommended recipes
+    recommended_recipes = df_recipes.iloc[similar_indices].to_dict(orient='records')
+
+    return jsonify(recommended_recipes)
 
 if __name__ == '__main__':
     app.run(debug=True)

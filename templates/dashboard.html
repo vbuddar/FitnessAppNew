@@ -68,6 +68,26 @@
     </div>
   </div>
 
+  <!-- Recommend by Ingredients Section -->
+  <div class="container site-section mt-4" id="recommend-by-ingredients">
+    <h4 class="text-white text-center mb-4">🍳 Recommend Recipes by Ingredients</h4>
+    <form id="ingredient-recommendation-form" class="text-center">
+      <label for="recipe_name">Select a Recipe:</label>
+      <select id="recipe_name" name="recipe_name" class="form-select mb-3" style="width: 50%; margin: 0 auto;">
+        <option value="Grilled Chicken Salad">Grilled Chicken Salad</option>
+        <option value="Greek Yogurt Parfait">Greek Yogurt Parfait</option>
+        <option value="Avocado Toast">Avocado Toast</option>
+      </select>
+      <button type="button" id="get-ingredient-recommendations" class="btn btn-lg btn-warning shadow-lg" style="
+        font-size: 1.5rem; 
+        padding: 15px 30px; 
+        border-radius: 10px;">
+        🥗 Get Ingredient-Based Recommendations
+      </button>
+    </form>
+    <div id="ingredient-recommendation-results" class="mt-4 text-white"></div>
+  </div>
+
   <!-- Carousel Section -->
   <div class="carousel slide" data-bs-ride="carousel" id="carousel-1">
     <div class="carousel-inner">
@@ -121,10 +141,33 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $(".add-favorite").on("click", function () {
-        // Add your JavaScript for adding favorites
-      });
+    document.getElementById("get-ingredient-recommendations").addEventListener("click", function () {
+      const recipeName = document.getElementById("recipe_name").value;
+
+      fetch(`/recommend_by_ingredients?recipe_name=${recipeName}`)
+        .then(response => response.json())
+        .then(data => {
+          const resultsDiv = document.getElementById("ingredient-recommendation-results");
+
+          if (data.error) {
+            resultsDiv.innerHTML = `<p class="text-danger">${data.error}</p>`;
+            return;
+          }
+
+          const recommendations = data.map(recipe => `
+            <li class="list-group-item bg-dark text-white">
+              <strong>${recipe.name}</strong> - ${recipe.ingredients.join(', ')}
+            </li>
+          `).join("");
+
+          resultsDiv.innerHTML = `
+            <h5>Recommended Recipes:</h5>
+            <ul class="list-group">${recommendations}</ul>
+          `;
+        })
+        .catch(error => {
+          console.error("Error fetching recommendations:", error);
+        });
     });
   </script>
   {% endblock %}
