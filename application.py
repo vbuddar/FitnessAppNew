@@ -160,20 +160,34 @@ def login():
         form = LoginForm()
         if form.validate_on_submit():
             # Find user by email
-            user = mongo.db.user.find_one({'email': form.email.data}, {'email', 'pwd', 'name', 'user_type'})
+            user = mongo.db.user.find_one({'email': form.email.data}, {'email', 'pwd', 'name', 'user_type', 'feelings'})
+
             if user and bcrypt.checkpw(form.password.data.encode("utf-8"), user['pwd']):
                 flash('You have been logged in!', 'success')
                 session['email'] = user['email']
                 session['name'] = user['name']
 
-                # Now fetch the user type
-                user_type = user.get('user_type')  # Get user type from the fetched user data
+                # Fetch feelings data
+                feelings_data = user.get('feelings', [])
+                print("login:   ", feelings_data)
+                today = datetime.today().date()  # Get today's date
 
-                # Redirect based on user type
+                # Check if the user has already submitted a feeling today
+                already_submitted_today = any(
+                    f['date'].date() == today if isinstance(f['date'], datetime) else False
+                    for f in feelings_data
+                )
+
+                # Check if user is a coach
+                user_type = user.get('user_type')  # Get user type from the fetched user data
                 if user_type == 'coach':
                     return redirect(url_for('coach_dashboard'))
                 else:
-                    return redirect(url_for('feeling_and_goal'))
+                    # If not a coach, check if they've submitted their feeling today
+                    if already_submitted_today:
+                        return redirect(url_for('dashboard'))  # Redirect to dashboard if feeling is submitted
+                    else:
+                        return redirect(url_for('feeling_and_goal'))  # Otherwise, go to feeling_and_goal
             else:
                 flash('Login Unsuccessful. Please check username and password', 'danger')
     else:
