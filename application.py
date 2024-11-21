@@ -173,7 +173,7 @@ def login():
                 if user_type == 'coach':
                     return redirect(url_for('coach_dashboard'))
                 else:
-                    return redirect(url_for('dashboard'))
+                    return redirect(url_for('feeling_and_goal'))
             else:
                 flash('Login Unsuccessful. Please check username and password', 'danger')
     else:
