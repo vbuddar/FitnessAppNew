@@ -6,6 +6,11 @@ import ast  # To parse string representations of Python objects
 MONGO_URI = "mongodb://localhost:27017/"  # Replace with your MongoDB URI
 DATABASE_NAME = "recipes_db"
 COLLECTION_NAME = "recipes"
+MONGO_URI = "mongodb://localhost:27017/"
+DATABASE_NAME = "recipes_db"
+COLLECTION_NAME = "recipes"
+USER_INTERACTIONS_COLLECTION = "user_interactions"
+USE_DATABASE = "user"
 
 # Connect to MongoDB
 client = MongoClient(MONGO_URI)
@@ -41,3 +46,22 @@ print(f"Inserted {len(recipes_list)} recipes into MongoDB.")
 
 # Close the connection
 client.close()
+
+
+
+def ensure_user_interactions_collection():
+    """
+    Ensures that the 'user_interactions' collection exists in the MongoDB database.
+    """
+    client = MongoClient(MONGO_URI)
+    db = client[USE_DATABASE]
+
+    # Check if the collection exists
+    if USER_INTERACTIONS_COLLECTION not in db.list_collection_names():
+        # Create the collection
+        db.create_collection(USER_INTERACTIONS_COLLECTION)
+        print(f"Collection '{USER_INTERACTIONS_COLLECTION}' created successfully.")
+    else:
+        print(f"Collection '{USER_INTERACTIONS_COLLECTION}' already exists.")
+
+    client.close()

@@ -62,7 +62,28 @@ import numpy as np
 MONGO_URI = "mongodb://localhost:27017/"
 DATABASE_NAME = "recipes_db"
 COLLECTION_NAME = "recipes"
+USER_INTERACTIONS_COLLECTION = "user_interactions"
+USE_DATABASE = "user"
 
+def ensure_user_interactions_collection():
+    """
+    Ensures that the 'user_interactions' collection exists in the MongoDB database.
+    """
+    client = MongoClient(MONGO_URI)
+    db = client[USE_DATABASE]
+
+    # Check if the collection exists
+    if USER_INTERACTIONS_COLLECTION not in db.list_collection_names():
+        # Create the collection
+        db.create_collection(USER_INTERACTIONS_COLLECTION)
+        print(f"Collection '{USER_INTERACTIONS_COLLECTION}' created successfully.")
+    else:
+        print(f"Collection '{USER_INTERACTIONS_COLLECTION}' already exists.")
+
+    client.close()
+
+# Call this function at the start of your application or script
+ensure_user_interactions_collection()
 
 # Example user-recipe interaction data
 data = {
@@ -2124,25 +2145,35 @@ recipes = [
     },
 ]
 
+from datetime import datetime, timedelta
+import random
+from pymongo import MongoClient
+from flask import request, render_template
+
+
 @app.route('/recipes', methods=['GET'])
 def get_recipes():
     """
-    Get recipes filtered by fitness goal and meal type.
+    Get recipes filtered by fitness goal and meal type, prioritize by frequency and recency,
+    and log user interactions in MongoDB.
 
     Query Parameters:
+    - user_id: The user's ID.
     - goal: The fitness goal (e.g., "muscle_gain", "weight_loss").
     - type: Optional, the meal type (e.g., "breakfast", "lunch", "snack").
 
     Returns:
-    - JSON list of suggested recipes.
+    - Rendered HTML with suggested recipes.
     """
     # Get query parameters
+    user_id = request.args.get('user_id', type=int)
     goal = request.args.get('goal', 'maintenance')  # Default to 'maintenance'
-    meal_type = request.args.get('type', None)     # Optional meal type filter
+    meal_type = request.args.get('type', None)      # Optional meal type filter
 
     client = MongoClient(MONGO_URI)
     db = client[DATABASE_NAME]
-    collection = db[COLLECTION_NAME]
+    recipe_collection = db[COLLECTION_NAME]
+    interaction_collection = db[USER_INTERACTIONS_COLLECTION]
 
     # Build the query
     query = {"goal": {"$in": [goal]}}
@@ -2152,14 +2183,118 @@ def get_recipes():
     print(f"Query being executed: {query}")
 
     # Fetch recipes from MongoDB
-    recipes = list(collection.find(query))
-    client.close()
+    recipes = list(recipe_collection.find(query))
 
-    # Randomly select up to 3 recipes
-    suggested_recipes = random.sample(recipes, min(3, len(recipes)))
+    # Get user interaction data
+    interactions = list(interaction_collection.find({"user_id": user_id}))
+
+    # Create a dictionary to store scores
+    recipe_scores = {str(recipe["_id"]): {"frequency": 0, "recency": 0} for recipe in recipes}
+
+    # Calculate frequency and recency scores
+    for interaction in interactions:
+        recipe_id = str(interaction["recipe_id"])
+        if recipe_id in recipe_scores:
+            # Frequency: Increment the count
+            recipe_scores[recipe_id]["frequency"] += 1
+            
+            # Recency: Calculate the score based on the last interaction
+            last_interacted = interaction.get("last_interacted", datetime.min)
+            days_ago = (datetime.now() - last_interacted).days
+            recipe_scores[recipe_id]["recency"] += max(0, 1 / (1 + days_ago))  # Higher score for recent interactions
+
+    # Combine frequency and recency into a final score
+    for recipe_id in recipe_scores:
+        recipe_scores[recipe_id]["final_score"] = (
+            recipe_scores[recipe_id]["frequency"] * 0.7 +  # Weight for frequency
+            recipe_scores[recipe_id]["recency"] * 0.3      # Weight for recency
+        )
+
+    # Sort recipes by their final score
+    sorted_recipes = sorted(recipes, key=lambda r: recipe_scores[str(r["_id"])]["final_score"], reverse=True)
+
+    # Select the top 3 recipes
+    suggested_recipes = sorted_recipes[:3]
+
+    # Log user interactions in MongoDB
+    for recipe in suggested_recipes:
+        recipe_id = recipe.get("_id")
+        interaction = {
+            "user_id": user_id,
+            "recipe_id": recipe_id,
+            "last_interacted": datetime.now()
+        }
+
+        # Upsert (insert or update) interaction
+        interaction_collection.update_one(
+            {"user_id": user_id, "recipe_id": recipe_id},
+            {"$set": interaction},
+            upsert=True
+        )
+
+    client.close()
 
     # Render the results
     return render_template('results.html', recipes=suggested_recipes)
+
+# @app.route('/recipes', methods=['GET'])
+# def get_recipes():
+#     """
+#     Get recipes filtered by fitness goal and meal type, and log user interactions in MongoDB.
+
+#     Query Parameters:
+#     - user_id: The user's ID.
+#     - goal: The fitness goal (e.g., "muscle_gain", "weight_loss").
+#     - type: Optional, the meal type (e.g., "breakfast", "lunch", "snack").
+
+#     Returns:
+#     - Rendered HTML with suggested recipes.
+#     """
+#     # Get query parameters
+#     user_id = request.args.get('user_id', type=int)
+#     goal = request.args.get('goal', 'maintenance')  # Default to 'maintenance'
+#     meal_type = request.args.get('type', None)      # Optional meal type filter
+
+#     client = MongoClient(MONGO_URI)
+#     db = client[DATABASE_NAME]
+#     recipe_collection = db[COLLECTION_NAME]
+#     interaction_collection = db[USER_INTERACTIONS_COLLECTION]
+
+#     # Build the query
+#     query = {"goal": {"$in": [goal]}}
+#     if meal_type:
+#         query["type"] = meal_type
+
+#     print(f"Query being executed: {query}")
+
+#     # Fetch recipes from MongoDB
+#     recipes = list(recipe_collection.find(query))
+    
+#     # Randomly select up to 3 recipes
+#     suggested_recipes = random.sample(recipes, min(3, len(recipes)))
+
+#     # Log user interactions in MongoDB
+#     for recipe in suggested_recipes:
+#         recipe_id = recipe.get("_id")
+        
+#         # Prepare interaction document
+#         interaction = {
+#             "user_id": user_id,
+#             "recipe_id": recipe_id,
+#             "rating": None  # Rating can be updated later
+#         }
+
+#         # Upsert (insert or update) interaction
+#         interaction_collection.update_one(
+#             {"user_id": user_id, "recipe_id": recipe_id},  # Match on user_id and recipe_id
+#             {"$set": interaction},                        # Update interaction fields
+#             upsert=True                                   # Insert if not already present
+#         )
+
+#     client.close()
+
+#     # Render the results
+#     return render_template('results.html', recipes=suggested_recipes)
 
 
 
@@ -2193,8 +2328,10 @@ df_recipes['ingredient_text'] = df_recipes['ingredients'].apply(lambda x: ' '.jo
 tfidf = TfidfVectorizer(stop_words='english')
 tfidf_matrix = tfidf.fit_transform(df_recipes['ingredient_text'])
 
+
 @app.route('/recommend_by_ingredients', methods=['GET'])
 def recommend_by_ingredients():
+# def recommend_by_ingredients():
     """
     Recommend recipes based on ingredients of a selected recipe.
 
@@ -2209,10 +2346,27 @@ def recommend_by_ingredients():
     if not recipe_name:
         return jsonify({"error": "Please provide a recipe_name"}), 400
 
-    # Find the index of the recipe in the DataFrame
+    # Connect to MongoDB and load the data
+    client = MongoClient(MONGO_URI)
+    db = client[DATABASE_NAME]
+    collection = db[COLLECTION_NAME]
+
+    # Load recipes from MongoDB into a DataFrame
+    recipes = list(collection.find({}, {"_id": 0, "name": 1, "ingredients": 1}))
+    df_recipes = pd.DataFrame(recipes)
+
+    # Check if the recipe exists
     if recipe_name not in df_recipes['name'].values:
         return jsonify({"error": "Recipe not found"}), 404
 
+    # Convert ingredients to strings for TF-IDF processing
+    df_recipes['ingredients_text'] = df_recipes['ingredients'].apply(lambda x: ' '.join(x))
+
+    # Compute TF-IDF matrix
+    tfidf_vectorizer = TfidfVectorizer()
+    tfidf_matrix = tfidf_vectorizer.fit_transform(df_recipes['ingredients_text'])
+
+    # Find the index of the given recipe
     recipe_index = df_recipes[df_recipes['name'] == recipe_name].index[0]
 
     # Compute similarity scores
@@ -2224,7 +2378,44 @@ def recommend_by_ingredients():
     # Retrieve the recommended recipes
     recommended_recipes = df_recipes.iloc[similar_indices].to_dict(orient='records')
 
+    # Close MongoDB connection
+    client.close()
+
     return jsonify(recommended_recipes)
+
+
+# @app.route('/recommend_by_ingredients', methods=['GET'])
+# def recommend_by_ingredients():
+#     """
+#     Recommend recipes based on ingredients of a selected recipe.
+
+#     Query Parameters:
+#     - recipe_name: Name of the recipe to base recommendations on.
+
+#     Returns:
+#     - JSON list of recommended recipes.
+#     """
+#     recipe_name = request.args.get('recipe_name')
+
+#     if not recipe_name:
+#         return jsonify({"error": "Please provide a recipe_name"}), 400
+
+#     # Find the index of the recipe in the DataFrame
+#     if recipe_name not in df_recipes['name'].values:
+#         return jsonify({"error": "Recipe not found"}), 404
+
+#     recipe_index = df_recipes[df_recipes['name'] == recipe_name].index[0]
+
+#     # Compute similarity scores
+#     cosine_similarities = cosine_similarity(tfidf_matrix[recipe_index], tfidf_matrix).flatten()
+
+#     # Get indices of the top 3 most similar recipes (excluding itself)
+#     similar_indices = cosine_similarities.argsort()[-4:-1][::-1]
+
+#     # Retrieve the recommended recipes
+#     recommended_recipes = df_recipes.iloc[similar_indices].to_dict(orient='records')
+
+#     return jsonify(recommended_recipes)
 
 user_interactions = pd.DataFrame([
     {"user_id": 1, "recipe_id": 1, "rating": 5},
@@ -2236,9 +2427,28 @@ user_interactions = pd.DataFrame([
 ])
 
 # Collaborative Filtering Function
+from bson import ObjectId
+
 def collaborative_filtering():
+    """
+    Generate trending recipes using collaborative filtering.
+    """
+    client = MongoClient(MONGO_URI)
+    db = client[DATABASE_NAME]
+    interaction_collection = db[USER_INTERACTIONS_COLLECTION]
+    recipe_collection = db[COLLECTION_NAME]
+
+    # Fetch user interactions from MongoDB
+    interactions = list(interaction_collection.find())
+    interaction_df = pd.DataFrame(interactions)
+
+    if interaction_df.empty:
+        print("No interactions found in the database.")
+        client.close()
+        return []
+
     # Create a user-item matrix
-    user_item_matrix = user_interactions.pivot(index='user_id', columns='recipe_id', values='rating').fillna(0)
+    user_item_matrix = interaction_df.pivot(index='user_id', columns='recipe_id', values='rating').fillna(0)
 
     # Compute cosine similarity between recipes
     recipe_similarity = cosine_similarity(user_item_matrix.T)  # Transpose to get recipe similarities
@@ -2252,11 +2462,19 @@ def collaborative_filtering():
     trending_recipes = trending_scores.sort_values(ascending=False).index.tolist()
 
     # Map back to recipe details
-    trending_recipe_details = [recipe for recipe in recipes if recipe["id"] in trending_recipes]
+    recipes = list(recipe_collection.find())
+    trending_recipe_details = [
+        {**recipe, "_id": str(recipe["_id"])} for recipe in recipes if recipe["_id"] in trending_recipes
+    ]
+
+    client.close()
     return trending_recipe_details
 
 @app.route('/trending_recipes', methods=['GET'])
 def trending_recipes():
+    """
+    Endpoint to fetch trending recipes using collaborative filtering.
+    """
     try:
         # Get trending recipes using collaborative filtering
         trending = collaborative_filtering()
@@ -2266,8 +2484,15 @@ def trending_recipes():
         error_details = traceback.format_exc()
         print(f"Error occurred in /trending_recipes: {error_details}")
         return jsonify({"error": "An error occurred while fetching trending recipes.", "details": str(e)}), 500
-
-
+    
+@app.route('/all_recipes', methods=['GET'])
+def get_recipe_names():
+    client = MongoClient(MONGO_URI)
+    db = client[DATABASE_NAME]
+    collection = db[COLLECTION_NAME]
+    recipes = list(collection.find({}, {"_id": 0, "name": 1}))
+    client.close()
+    return jsonify(recipes)
 
 if __name__ == '__main__':
     app.run(debug=True)

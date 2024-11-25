@@ -101,25 +101,83 @@
     </div>
   </div>
 
-  <!-- Recommend by Ingredients Section -->
-  <div class="container site-section mt-4" id="recommend-by-ingredients">
-    <h4 class="text-white text-center mb-4">🍳 Recommend Recipes by Ingredients</h4>
-    <form id="ingredient-recommendation-form" class="text-center">
-      <label for="recipe_name">Select a Recipe:</label>
-      <select id="recipe_name" name="recipe_name" class="form-select mb-3" style="width: 50%; margin: 0 auto;">
-        <option value="Grilled Chicken Salad">Grilled Chicken Salad</option>
-        <option value="Greek Yogurt Parfait">Greek Yogurt Parfait</option>
-        <option value="Avocado Toast">Avocado Toast</option>
-      </select>
-      <button type="button" id="get-ingredient-recommendations" class="btn btn-lg btn-warning shadow-lg" style="
-        font-size: 1.5rem; 
-        padding: 15px 30px; 
-        border-radius: 10px;">
-        🥗 Get Ingredient-Based Recommendations
-      </button>
-    </form>
-    <div id="ingredient-recommendation-results" class="mt-4 text-white"></div>
-  </div>
+<!-- Recommend by Ingredients Section -->
+<div class="container site-section mt-4" id="recommend-by-ingredients">
+  <h4 class="text-white text-center mb-4">🍳 Recommend Recipes by Ingredients</h4>
+  <form id="ingredient-recommendation-form" class="text-center">
+    <label for="recipe_name">Select a Recipe:</label>
+    <select id="recipe_name" name="recipe_name" class="form-select mb-3" style="width: 50%; margin: 0 auto;">
+      <!-- Options will be populated dynamically -->
+    </select>
+    <button type="button" id="get-ingredient-recommendations" class="btn btn-lg btn-warning shadow-lg" style="
+      font-size: 1.5rem; 
+      padding: 15px 30px; 
+      border-radius: 10px;">
+      🥗 Get Ingredient-Based Recommendations
+    </button>
+  </form>
+  <div id="ingredient-recommendation-results" class="mt-4 text-white"></div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const recipeSelect = document.getElementById("recipe_name");
+    const resultsDiv = document.getElementById("ingredient-recommendation-results");
+
+    // Fetch all recipe names from /all_recipes and populate the dropdown
+    fetch("/all_recipes")
+      .then(response => response.json())
+      .then(data => {
+        recipeSelect.innerHTML = ""; // Clear any existing options
+        data.forEach(recipe => {
+          const option = document.createElement("option");
+          option.value = recipe.name;
+          option.textContent = recipe.name;
+          recipeSelect.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error("Error fetching recipes:", error);
+        resultsDiv.innerHTML = "<p class='text-danger'>Failed to load recipes. Please try again later.</p>";
+      });
+
+    // Fetch ingredient-based recommendations when button is clicked
+    document.getElementById("get-ingredient-recommendations").addEventListener("click", () => {
+      const selectedRecipe = recipeSelect.value;
+
+      if (!selectedRecipe) {
+        resultsDiv.innerHTML = "<p class='text-danger'>Please select a recipe.</p>";
+        return;
+      }
+
+      fetch(`/recommend_by_ingredients?recipe_name=${encodeURIComponent(selectedRecipe)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            resultsDiv.innerHTML = `<p class='text-danger'>${data.error}</p>`;
+            return;
+          }
+
+          // Display the recommendations
+          resultsDiv.innerHTML = "<h5 class='mb-3'>Recommended Recipes:</h5>";
+          const recommendationsList = document.createElement("ul");
+          recommendationsList.className = "list-group";
+          data.forEach(recipe => {
+            const listItem = document.createElement("li");
+            listItem.className = "list-group-item bg-dark text-white";
+            listItem.textContent = recipe.name;
+            recommendationsList.appendChild(listItem);
+          });
+          resultsDiv.appendChild(recommendationsList);
+        })
+        .catch(error => {
+          console.error("Error fetching recommendations:", error);
+          resultsDiv.innerHTML = "<p class='text-danger'>Failed to fetch recommendations. Please try again later.</p>";
+        });
+    });
+  });
+</script>
+
 
   <!-- Trending Recipes Section -->
   <div class="container site-section mt-4" id="trending-recipes">
