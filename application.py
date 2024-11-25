@@ -34,6 +34,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 import random
+from pymongo import MongoClient
 
 
 app = Flask(__name__, template_folder='templates', static_url_path='/static')
@@ -57,6 +58,11 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import StandardScaler
 import numpy as np
+
+MONGO_URI = "mongodb://localhost:27017/"
+DATABASE_NAME = "recipes_db"
+COLLECTION_NAME = "recipes"
+
 
 # Example user-recipe interaction data
 data = {
@@ -2134,17 +2140,27 @@ def get_recipes():
     goal = request.args.get('goal', 'maintenance')  # Default to 'maintenance'
     meal_type = request.args.get('type', None)     # Optional meal type filter
 
-    # Filter recipes by fitness goal
-    filtered_recipes = [recipe for recipe in recipes if goal in recipe["goal"]]
+    client = MongoClient(MONGO_URI)
+    db = client[DATABASE_NAME]
+    collection = db[COLLECTION_NAME]
 
-    # Further filter by meal type if specified
+    # Build the query
+    query = {"goal": {"$in": [goal]}}
     if meal_type:
-        filtered_recipes = [recipe for recipe in filtered_recipes if recipe["type"] == meal_type]
+        query["type"] = meal_type
 
-    # Rotate recipes randomly and limit to 3 suggestions
-    suggested_recipes = random.sample(filtered_recipes, min(3, len(filtered_recipes)))
+    print(f"Query being executed: {query}")
 
+    # Fetch recipes from MongoDB
+    recipes = list(collection.find(query))
+    client.close()
+
+    # Randomly select up to 3 recipes
+    suggested_recipes = random.sample(recipes, min(3, len(recipes)))
+
+    # Render the results
     return render_template('results.html', recipes=suggested_recipes)
+
 
 
 
