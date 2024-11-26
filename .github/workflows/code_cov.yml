@@ -37,40 +37,30 @@ jobs:
 
     - name: Run the tests and collect coverage
       run: |
-        # Start the application in the background
-        python application.py &
+        # Start the application in production mode in the background
+        nohup FLASK_ENV=production python application.py > app.log 2>&1 &
         app_pid=$!
 
-        # Allow application time to initialize
-        sleep 5
+        # Allow the application to initialize
+        sleep 10
 
-        # Run tests and collect coverage in the background
+        # Run tests and collect coverage
         echo "Running tests..."
-        coverage run -m unittest tests.test_module > test_output.log 2>&1 &
-        coverage_pid=$!
+        coverage run -m unittest tests.test_module > test_output.log 2>&1
+        exit_code=$?
 
-        # Allow tests to run for a maximum of 60 seconds
-        sleep 60
-
-        # Check if the coverage process is still running
-        if ps -p $coverage_pid > /dev/null; then
-          echo "Tests are taking too long. Terminating..."
-          kill $coverage_pid
-          exit_code=1
-        else
-          wait $coverage_pid
-          exit_code=$?
-        fi
-
-        # Generate reports if tests finished successfully
+        # Generate reports if tests passed
         if [ $exit_code -eq 0 ]; then
           coverage xml -i
           coverage report -m
         else
-          echo "Tests failed. Check the log below:"
+          echo "Tests failed. Check the logs below:"
         fi
 
-        # Print test output log
+        # Print application and test logs
+        echo "Application logs:"
+        cat app.log
+        echo "Test output logs:"
         cat test_output.log
 
         # Stop the application
