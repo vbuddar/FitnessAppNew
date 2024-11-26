@@ -13,7 +13,7 @@ https://github.com/SEFall24-Team61/FitnessAppNew
 
 """
 import json, os
-from datetime import datetime
+from datetime import datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
 from bson.objectid import ObjectId, InvalidId 
@@ -2057,6 +2057,53 @@ def student_plans():
 
     return render_template("student_plans.html", assigned_plans=assigned_plans)
 
+@app.route("/weekly_goal", methods=["GET", "POST"])
+def weekly_goal():
+    if not session.get('email'):
+        return redirect(url_for('login'))
+    
+    user_email = session.get('email')
+    user = mongo.db.user.find_one({'email': user_email})
+
+    # Get today's date
+    today = datetime.today()
+
+    # Calculate the start of the week (Monday) and end of the week (Sunday)
+    start_of_week = today - timedelta(days=today.weekday())  # Monday
+    end_of_week = start_of_week + timedelta(days=6)  # Sunday
+
+    # Prepare list of dates for Monday to Sunday of the current week
+    week_dates = [(start_of_week + timedelta(days=i)).strftime("%b %d, %a") for i in range(7)]
+
+    # Handling form submission
+    if request.method == 'POST':
+        if 'day' in request.form:  # Updating progress for a specific day
+            day = request.form.get('day')
+            status = request.form.get('status')  # 'Done' or 'Not Done'
+            if day and status:
+                mongo.db.user.update_one(
+                    {'email': user_email},
+                    {'$set': {f'weekly_progress.{day}': status}}
+                )
+                flash(f"{day} marked as {status}.", "success")
+
+    # Retrieve user's progress (Done, Not Done, or None)
+    weekly_progress = user.get('weekly_progress', {day: None for day in [
+        'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']})
+
+    # Calculate progress percentage: count only 'Done' statuses
+    done_count = sum(1 for status in weekly_progress.values() if status == "Done")
+    not_done_count = sum(1 for status in weekly_progress.values() if status == "Not Done")
+    total_count = done_count + not_done_count
+    progress_percentage = int((done_count / 7) * 100) if total_count > 0 else 0
+    print(progress_percentage)
+
+    return render_template(
+        "weekly_goal.html",
+        weekly_progress=weekly_progress,
+        progress_percentage=progress_percentage,
+        week_dates=week_dates  # Pass the calculated dates to the template
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
