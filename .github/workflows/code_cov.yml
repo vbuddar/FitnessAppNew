@@ -53,6 +53,8 @@ jobs:
         if [ $exit_code -eq 0 ]; then
           coverage xml -i
           coverage report -m
+          # Add badge generation if you have a badge script
+          # Example: python scripts/generate_badge.py
         else
           echo "Tests failed. Check the logs below:"
         fi
@@ -67,3 +69,10 @@ jobs:
         kill $app_pid || true
 
         exit $exit_code
+
+    - name: Upload Code Coverage Badge
+      if: success()
+      run: |
+        # Replace this with your static image upload logic
+        echo "Uploading a static image for code coverage"
+        cp static/code-coverage.svg ./coverage-badge.svg
