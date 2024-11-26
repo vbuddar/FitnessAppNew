@@ -3,8 +3,7 @@
 [Link](https://drive.google.com/file/d/1JrFG1_1Hd8auymBR45ZmKW4HuM_TYOi6/view?usp=sharing)
 <br>
 <br>
-
-[![GitHub license](https://img.shields.io/github/license/vbuddar/FitnessAppNew.svg)](https://github.com/vbuddar/FitnessAppNew/blob/main/LICENSE.md)
+[![GitHub license](https://img.shields.io/github/license/vbuddar/FitnessAppNew)](https://github.com/vbuddar/FitnessAppNew/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14027020.svg)](https://doi.org/10.5281/zenodo.14027020)
 [![Made with Python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![GitHub last commit](https://img.shields.io/github/last-commit/vbuddar/FitnessAppNew/main)](https://github.com/vbuddar/FitnessAppNew/commits/main)
