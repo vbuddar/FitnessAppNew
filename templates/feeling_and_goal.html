@@ -92,6 +92,20 @@
         .back-home a:hover {
             color: #5a636a;  /* Darker grey on hover */
         }
+        .progress {
+            background-color: #f3f3f3;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 20px;
+        }
+        .progress-bar {
+            background-color: #4caf50;
+            height: 100%;
+            text-align: center;
+            color: white;
+            line-height: 20px;
+            font-size: 14px;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -152,9 +166,12 @@
             </form>
         </div>
 
-        <!-- Goal Reminder Form (without Acknowledge button) -->
-        <div id="goalModal" class="modal">
-            <h2>Don't forget your weekly goal!</h2>
+        <!-- Goal Reminder Form (Progress Bar) -->
+        <div class="progress mt-3">
+            <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%;" 
+                 aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                {{ progress_percentage }}%
+            </div>
         </div>
     </div>
 </body>
