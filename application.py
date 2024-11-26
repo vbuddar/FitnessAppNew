@@ -205,14 +205,22 @@ def feeling_and_goal():
     user = mongo.db.user.find_one({'email': user_email})
 
     if user:
+        # Calculate the weekly progress percentage (similar to weekly_goal)
+        weekly_progress = user.get('weekly_progress', {day: None for day in [
+            'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']})
+        done_count = sum(1 for status in weekly_progress.values() if status == "Done")
+        not_done_count = sum(1 for status in weekly_progress.values() if status == "Not Done")
+        total_count = done_count + not_done_count
+        progress_percentage = int((done_count / 7) * 100) if total_count > 0 else 0
+
         # Get the feelings data
         feelings_data = user.get('feelings', [])
-        
-        # Check if the user has already submitted their feeling for today
-        today = datetime.today().date()  # Get today's date
-        already_submitted_today = any(f['date'].date() == today for f in feelings_data)
+        today = datetime.today().date()
+        already_submitted_today = any(
+            f['date'].date() == today for f in feelings_data
+        )
 
-        # If the user already has a feeling for today, redirect them to the feeling tracker
+        # Redirect if the user already submitted today's feeling
         if already_submitted_today:
             return redirect(url_for('feeling_tracker'))
 
@@ -237,7 +245,10 @@ def feeling_and_goal():
         else:
             return redirect(url_for('dashboard'))
 
-    return render_template('feeling_and_goal.html', title='Your Feelings and Goals', goal_progress=goal_progress)
+    return render_template('feeling_and_goal.html', 
+                           title='Your Feelings and Goals', 
+                           goal_progress=goal_progress, 
+                           progress_percentage=progress_percentage)
 
 @app.route("/feeling_tracker")
 def feeling_tracker():
