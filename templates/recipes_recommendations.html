@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recommendations</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    }
+    .btn-lg {
+      font-size: 1.3rem;
+    }
+    .shadow-lg {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.5);
+    }
+    .site-section {
+      margin-top: 30px;
+    }
+    h4, h5 {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header class="text-center py-3 bg-dark">
+    <h1 class="text-warning">Discover Recommendations</h1>
+  </header>
+
+  <main class="container mt-4">
+    <!-- Recipe Suggestions Section -->
+    <div class="site-section" id="recipe-suggestions">
+      <h4 class="text-center text-warning">🍽️ Explore Recipe Suggestions</h4>
+      <form action="/recipes" method="GET" class="text-center">
+        <input type="hidden" name="user_id" value="1"> <!-- Replace with dynamic user ID -->
+        <div class="mb-3">
+          <label for="goal">Select Fitness Goal:</label>
+          <select name="goal" id="goal" class="form-select w-50 mx-auto">
+            <option value="muscle_gain">Muscle Gain</option>
+            <option value="weight_loss">Weight Loss</option>
+            <option value="maintenance" selected>Maintenance</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="type">Select Meal Type (Optional):</label>
+          <select name="type" id="type" class="form-select w-50 mx-auto">
+            <option value="">Any</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="snack">Snack</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-lg btn-warning shadow-lg w-50">
+          🍽️ Get Recipe Suggestions
+        </button>
+      </form>
+    </div>
+
+    <!-- Recommend by Ingredients Section -->
+    <div class="site-section mt-4" id="recommend-by-ingredients">
+      <h4 class="text-center text-warning">🍳 Recommend Recipes by Ingredients</h4>
+      <form id="ingredient-recommendation-form" class="text-center">
+        <div class="mb-3">
+          <label for="recipe_name">Select a Recipe:</label>
+          <select id="recipe_name" name="recipe_name" class="form-select w-50 mx-auto">
+            <!-- Options will be populated dynamically -->
+          </select>
+        </div>
+        <button type="button" id="get-ingredient-recommendations" class="btn btn-lg btn-warning shadow-lg w-50">
+          🥗 Get Ingredient-Based Recommendations
+        </button>
+      </form>
+      <div id="ingredient-recommendation-results" class="mt-4 text-white"></div>
+    </div>
+
+    <!-- Trending Recipes Section -->
+    <div class="site-section mt-4" id="trending-recipes">
+      <h4 class="text-center text-warning">🔥 Trending Recipes</h4>
+      <div class="text-center">
+        <button type="button" id="fetch-trending-recipes" class="btn btn-lg btn-primary shadow-lg w-50">
+          📈 Show Trending Recipes
+        </button>
+      </div>
+      <div id="trending-recommendation-results" class="mt-4 text-white"></div>
+    </div>
+  </main>
+
+  <footer class="text-center py-3 bg-dark">
+    <p class="text-muted">&copy; 2024 Your App. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript Section -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const recipeSelect = document.getElementById("recipe_name");
+      const ingredientResultsDiv = document.getElementById("ingredient-recommendation-results");
+      const trendingResultsDiv = document.getElementById("trending-recommendation-results");
+
+      // Fetch all recipe names
+      fetch("/all_recipes")
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(recipe => {
+            const option = document.createElement("option");
+            option.value = recipe.name;
+            option.textContent = recipe.name;
+            recipeSelect.appendChild(option);
+          });
+        })
+        .catch(error => console.error("Error fetching recipes:", error));
+
+      // Fetch ingredient-based recommendations
+      document.getElementById("get-ingredient-recommendations").addEventListener("click", () => {
+        const selectedRecipe = recipeSelect.value;
+        fetch(`/recommend_by_ingredients?recipe_name=${encodeURIComponent(selectedRecipe)}`)
+          .then(response => response.json())
+          .then(data => {
+            ingredientResultsDiv.innerHTML = data.error
+              ? `<p class='text-danger'>${data.error}</p>`
+              : `<h5 class="mb-3">Recommended Recipes:</h5><ul class="list-group">${data.map(
+                  recipe => `<li class="list-group-item bg-dark text-white">${recipe.name}</li>`
+                ).join("")}</ul>`;
+          })
+          .catch(error => console.error("Error fetching recommendations:", error));
+      });
+
+      // Fetch trending recipes
+      document.getElementById("fetch-trending-recipes").addEventListener("click", () => {
+        fetch("/trending_recipes")
+          .then(response => response.json())
+          .then(data => {
+            trendingResultsDiv.innerHTML = data.error
+              ? `<p class='text-danger'>${data.error}</p>`
+              : `<h5 class="mb-3">Trending Recipes:</h5><ul class="list-group">${data.map(
+                  recipe => `<li class="list-group-item bg-dark text-white">${recipe.name}</li>`
+                ).join("")}</ul>`;
+          })
+          .catch(error => console.error("Error fetching trending recipes:", error));
+      });
+    });
+  </script>
+</body>
+</html>

@@ -35,6 +35,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 import random
 from pymongo import MongoClient
+from datetime import datetime, timedelta
 
 
 app = Flask(__name__, template_folder='templates', static_url_path='/static')
@@ -295,33 +296,237 @@ def home():
     else:
         return redirect(url_for('login'))
 
-
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if not session.get('email'):
         form = LoginForm()
         if form.validate_on_submit():
             # Find user by email
-            user = mongo.db.user.find_one({'email': form.email.data}, {'email', 'pwd', 'name', 'user_type'})
+            user = mongo.db.user.find_one({'email': form.email.data}, {'email', 'pwd', 'name', 'user_type', 'feelings'})
+
             if user and bcrypt.checkpw(form.password.data.encode("utf-8"), user['pwd']):
                 flash('You have been logged in!', 'success')
                 session['email'] = user['email']
                 session['name'] = user['name']
 
-                # Now fetch the user type
-                user_type = user.get('user_type')  # Get user type from the fetched user data
+                # Fetch feelings data
+                feelings_data = user.get('feelings', [])
+                print("login:   ", feelings_data)
+                today = datetime.today().date()  # Get today's date
 
-                # Redirect based on user type
+                # Check if the user has already submitted a feeling today
+                already_submitted_today = any(
+                    f['date'].date() == today if isinstance(f['date'], datetime) else False
+                    for f in feelings_data
+                )
+
+                # Check if user is a coach
+                user_type = user.get('user_type')  # Get user type from the fetched user data
                 if user_type == 'coach':
                     return redirect(url_for('coach_dashboard'))
                 else:
-                    return redirect(url_for('dashboard'))
+                    # If not a coach, check if they've submitted their feeling today
+                    if already_submitted_today:
+                        return redirect(url_for('dashboard'))  # Redirect to dashboard if feeling is submitted
+                    else:
+                        return redirect(url_for('feeling_and_goal'))  # Otherwise, go to feeling_and_goal
             else:
                 flash('Login Unsuccessful. Please check username and password', 'danger')
     else:
         return redirect(url_for('home'))
 
     return render_template('login.html', title='Login', form=form)
+
+@app.route("/feeling-and-goal", methods=['GET', 'POST'])
+def feeling_and_goal():
+    if not session.get('email'):
+        return redirect(url_for('login'))
+
+    # Fetch the user data from the database
+    user_email = session.get('email')
+    user = mongo.db.user.find_one({'email': user_email})
+
+    if user:
+        # Calculate the weekly progress percentage (similar to weekly_goal)
+        weekly_progress = user.get('weekly_progress', {day: None for day in [
+            'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']})
+        done_count = sum(1 for status in weekly_progress.values() if status == "Done")
+        not_done_count = sum(1 for status in weekly_progress.values() if status == "Not Done")
+        total_count = done_count + not_done_count
+        progress_percentage = int((done_count / 7) * 100) if total_count > 0 else 0
+
+        # Get the feelings data
+        feelings_data = user.get('feelings', [])
+        today = datetime.today().date()
+        already_submitted_today = any(
+            f['date'].date() == today for f in feelings_data
+        )
+
+        # Redirect if the user already submitted today's feeling
+        if already_submitted_today:
+            return redirect(url_for('feeling_tracker'))
+
+        # Get user's goal progress (assuming it's stored as a percentage or some other metric)
+        goal_progress = user.get('goal_progress', 0)  # Default to 0 if no progress is stored
+
+    if request.method == 'POST':
+        feeling = request.form.get('feeling')  # Get the feeling value from the hidden input field
+
+        # Insert user's feeling into the database if a feeling is selected
+        if feeling:
+            mongo.db.user.update_one(
+                {'email': session['email']},
+                {'$push': {'feelings': {'date': datetime.now(), 'feeling': int(feeling)}}}
+            )
+            flash('Your feeling has been submitted!', 'success')  # Optional feedback after submission
+
+        # Redirect based on user type
+        user = mongo.db.user.find_one({'email': session['email']}, {'user_type'})
+        if user.get('user_type') == 'coach':
+            return redirect(url_for('coach_dashboard'))
+        else:
+            return redirect(url_for('dashboard'))
+
+    return render_template('feeling_and_goal.html', 
+                           title='Your Feelings and Goals', 
+                           goal_progress=goal_progress, 
+                           progress_percentage=progress_percentage)
+
+@app.route("/feeling_tracker")
+def feeling_tracker():
+    # Fetch the feeling data from MongoDB for the logged-in user
+    user_email = session.get("email")
+    if user_email:
+        # Query MongoDB to get the user document
+        user = mongo.db.user.find_one({'email': user_email})
+        
+        if user:
+            # Extract the feelings data from the user's document
+            feelings_data = user.get('feelings', [])  # Get the feelings array, default to an empty list if not present
+            print("tracker:     ",feelings_data)
+            # Sort feelings by date in descending order (latest first)
+            feelings_data.sort(key=lambda x: x['date'], reverse=True)
+
+            # Get the latest feeling (if any)
+            latest_feeling = feelings_data[0] if feelings_data else None
+
+            # Convert the data to a format suitable for the chart
+            feelings = []
+            for data in feelings_data:
+                feelings.append({
+                    'date': data['date'],  # The date when the feeling was logged
+                    'feeling': data['feeling']  # The feeling value (1-5 scale)
+                })
+            
+            # Pass the feelings data and latest feeling to the template
+            return render_template('feeling_tracker.html', feelings=feelings, latest_feeling=latest_feeling)
+        else:
+            flash('No user found!', 'danger')
+            return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
+@app.route("/dashboard", methods=['GET', 'POST'])
+def dashboard():
+    # Get the email from the session
+    email = session.get('email')
+    
+    # Ensure we have a valid email
+    if email:
+        student = mongo.db.profile.find_one({"email": email})
+        print("test-YK", student)
+
+        if student:
+            print('Student ID:', student["_id"])
+            student_id = student["_id"]
+            
+            user_email = session.get('email')
+            user = mongo.db.user.find_one({'email': user_email})
+            print("weekly goal test: ", user)
+            # Fetch the meetings where the student ID matches the profile's _id
+            upcoming_meetings = list(mongo.db.meetings.find({
+                "student_id": str(student["_id"])  # Using the ObjectId directly
+            }).sort("created_at", -1).limit(5))
+            print("Upcoming Meetings:", upcoming_meetings)
+
+            # List of exercises (example data)
+            exercises = [
+                {"id": 1, "name": "Yoga"},
+                {"id": 2, "name": "Swimming"},
+            ]
+
+            # Fetch the user's weekly progress data
+            # Calculate the weekly progress percentage (similar to weekly_goal)
+            weekly_progress = user.get('weekly_progress', {day: None for day in [
+                'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']})
+            done_count = sum(1 for status in weekly_progress.values() if status == "Done")
+            not_done_count = sum(1 for status in weekly_progress.values() if status == "Not Done")
+            total_count = done_count + not_done_count
+            progress_percentage = int((done_count / 7) * 100) if total_count > 0 else 0
+            print("dashboard: ", progress_percentage)
+
+        else:
+            # If no student is found, set defaults
+            upcoming_meetings = []
+            exercises = []
+            progress_percentage = 0
+    else:
+        # If no email is found in session, set defaults
+        upcoming_meetings = []
+        exercises = []
+        progress_percentage = 0
+
+    # Render the dashboard with the progress percentage
+    return render_template('dashboard.html', title='Dashboard', exercises=exercises, 
+                           upcoming_meetings=upcoming_meetings, progress_percentage=progress_percentage)
+
+
+@app.route("/weekly_goal", methods=["GET", "POST"])
+def weekly_goal():
+    if not session.get('email'):
+        return redirect(url_for('login'))
+    
+    user_email = session.get('email')
+    user = mongo.db.user.find_one({'email': user_email})
+
+    # Get today's date
+    today = datetime.today()
+
+    # Calculate the start of the week (Monday) and end of the week (Sunday)
+    start_of_week = today - timedelta(days=today.weekday())  # Monday
+    end_of_week = start_of_week + timedelta(days=6)  # Sunday
+
+    # Prepare list of dates for Monday to Sunday of the current week
+    week_dates = [(start_of_week + timedelta(days=i)).strftime("%b %d, %a") for i in range(7)]
+
+    # Handling form submission
+    if request.method == 'POST':
+        if 'day' in request.form:  # Updating progress for a specific day
+            day = request.form.get('day')
+            status = request.form.get('status')  # 'Done' or 'Not Done'
+            if day and status:
+                mongo.db.user.update_one(
+                    {'email': user_email},
+                    {'$set': {f'weekly_progress.{day}': status}}
+                )
+                flash(f"{day} marked as {status}.", "success")
+
+    # Retrieve user's progress (Done, Not Done, or None)
+    weekly_progress = user.get('weekly_progress', {day: None for day in [
+        'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']})
+
+    # Calculate progress percentage: count only 'Done' statuses
+    done_count = sum(1 for status in weekly_progress.values() if status == "Done")
+    not_done_count = sum(1 for status in weekly_progress.values() if status == "Not Done")
+    total_count = done_count + not_done_count
+    progress_percentage = int((done_count / 7) * 100) if total_count > 0 else 0
+    print(progress_percentage)
+
+    return render_template(
+        "weekly_goal.html",
+        weekly_progress=weekly_progress,
+        progress_percentage=progress_percentage,
+        week_dates=week_dates  # Pass the calculated dates to the template
+    )
 
 
 @app.route("/logout", methods=['GET', 'POST'])
@@ -1175,40 +1380,6 @@ def ajaxapproverequest():
     return json.dumps({'status': False}), 500, {
         'ContentType:': 'application/json'}
 
-
-@app.route("/dashboard", methods=['GET', 'POST'])
-def dashboard():
-    # ############################
-    # dashboard() function displays the dashboard.html template
-    # route "/dashboard" will redirect to dashboard() function.
-    # dashboard() called and displays the list of activities
-    # Output: redirected to dashboard.html
-    # ##########################
-    email = session.get('email')
-    if email:
-        student = mongo.db.profile.find_one({"email": email})
-
-        if student:
-            print('671ea6c405d47736f9539064' ,student["_id"])
-            student_id = student["_id"]
-            # Fetch the meetings where the student ID matches the profile's _id
-            upcoming_meetings = list(mongo.db.meetings.find({
-                "student_id": str(student["_id"]) # Using the ObjectId directly
-            }).sort("created_at", -1).limit(5))
-            print("upc",upcoming_meetings)
-            # List of exercises (example data)
-            exercises = [
-                {"id": 1, "name": "Yoga"},
-                {"id": 2, "name": "Swimming"},
-            ]
-        else:
-            upcoming_meetings = []
-            exercises = []
-    else:
-        upcoming_meetings = []
-        exercises = []
-
-    return render_template('dashboard.html', title='Dashboard', exercises=exercises, upcoming_meetings = upcoming_meetings)
 
 
 @app.route('/add_favorite', methods=['POST'])
@@ -2493,6 +2664,12 @@ def get_recipe_names():
     recipes = list(collection.find({}, {"_id": 0, "name": 1}))
     client.close()
     return jsonify(recipes)
+
+@app.route('/recipes_recommendations')
+def recommendations():
+    return render_template('recipes_recommendations.html')
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

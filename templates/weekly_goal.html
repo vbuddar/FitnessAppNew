@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Goal Tracker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        h1, th, td {
+            color: white;
+        }
+        h1, h4, p, label {
+            color: white !important;
+        }
+        .tracker-container {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #333;
+        }
+        .progress {
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+    <main role="main" class="container mt-5">
+        <h1 class="text-center mb-4">Weekly Goal Tracker</h1>
+
+        <!-- Progress Table -->
+        <div class="tracker-container">
+            <table class="table table-dark table-bordered text-center">
+                <thead>
+                    <tr>
+                        {% for date in week_dates %}
+                            <th>{{ date }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] %}
+                        <td>
+                            <form method="POST" action="{{ url_for('weekly_goal') }}">
+                                <input type="hidden" name="day" value="{{ day }}">
+                                <button 
+                                    type="submit" 
+                                    name="status" 
+                                    value="{{ 'Done' if weekly_progress.get(day) != 'Done' else 'Not Done' }}" 
+                                    class="btn 
+                                    {% if weekly_progress.get(day) == 'Done' %}
+                                        btn-success
+                                    {% elif weekly_progress.get(day) == 'Not Done' %}
+                                        btn-danger
+                                    {% else %}
+                                        btn-secondary
+                                    {% endif %}">
+                                    {% if weekly_progress.get(day) == 'Done' %}
+                                        ✔ Done
+                                    {% elif weekly_progress.get(day) == 'Not Done' %}
+                                        ✘ Not Done
+                                    {% else %}
+                                        Select
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Progress Bar -->
+            <div class="progress mt-3">
+                <div 
+                    class="progress-bar" 
+                    role="progressbar" 
+                    style="width: {{ progress_percentage }}%;" 
+                    aria-valuenow="{{ progress_percentage }}" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                    {{ progress_percentage }}%
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    {% endblock %}
+</body>
+</html>
