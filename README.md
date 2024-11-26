@@ -4,10 +4,10 @@
 <br>
 <br>
 
-[![GitHub license](https://img.shields.io/github/license/vbuddar/FitnessAppNew.svg)](https://github.com/vbuddar/FitnessAppNew/blob/main/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/vbuddar/FitnessAppNew.svg)](https://github.com/vbuddar/FitnessAppNew/blob/feature_naga_project3_fall2024/LICENSE.md)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14027020.svg)](https://doi.org/10.5281/zenodo.14027020)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-![GitHub last commit (branch)](https://img.shields.io/github/last-commit/vbuddar/FitnessAppNew/main)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/vbuddar/FitnessAppNew/feature_naga_project3_fall2024)
 [![Python application](https://github.com/vbuddar/FitnessAppNew/actions/workflows/python-app.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/python-app.yml)
 [![Lint](https://github.com/vbuddar/FitnessAppNew/actions/workflows/syntax_checker.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/syntax_checker.yml)
 [![Pylint](https://github.com/vbuddar/FitnessAppNew/actions/workflows/pylint.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/pylint.yml)
