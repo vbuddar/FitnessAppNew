@@ -1136,40 +1136,93 @@ def ajaxapproverequest():
         'ContentType:': 'application/json'}
 
 
+# @app.route("/dashboard", methods=['GET', 'POST'])
+# def dashboard():
+#     # ############################
+#     # dashboard() function displays the dashboard.html template
+#     # route "/dashboard" will redirect to dashboard() function.
+#     # dashboard() called and displays the list of activities
+#     # Output: redirected to dashboard.html
+#     # ##########################
+#     email = session.get('email')
+#     if email:
+#         student = mongo.db.profile.find_one({"email": email})
+
+#         if student:
+#             print('671ea6c405d47736f9539064' ,student["_id"])
+#             student_id = student["_id"]
+#             # Fetch the meetings where the student ID matches the profile's _id
+#             upcoming_meetings = list(mongo.db.meetings.find({
+#                 "student_id": str(student["_id"]) # Using the ObjectId directly
+#             }).sort("created_at", -1).limit(5))
+#             print("upc",upcoming_meetings)
+#             # List of exercises (example data)
+#             exercises = [
+#                 {"id": 1, "name": "Yoga"},
+#                 {"id": 2, "name": "Swimming"},
+#             ]
+#         else:
+#             upcoming_meetings = []
+#             exercises = []
+#     else:
+#         upcoming_meetings = []
+#         exercises = []
+
+#     return render_template('dashboard.html', title='Dashboard', exercises=exercises, upcoming_meetings = upcoming_meetings)
+
 @app.route("/dashboard", methods=['GET', 'POST'])
 def dashboard():
-    # ############################
-    # dashboard() function displays the dashboard.html template
-    # route "/dashboard" will redirect to dashboard() function.
-    # dashboard() called and displays the list of activities
-    # Output: redirected to dashboard.html
-    # ##########################
+    # Get the email from the session
     email = session.get('email')
+    
+    # Ensure we have a valid email
     if email:
         student = mongo.db.profile.find_one({"email": email})
+        print("test-YK", student)
 
         if student:
-            print('671ea6c405d47736f9539064' ,student["_id"])
+            print('Student ID:', student["_id"])
             student_id = student["_id"]
+            
+            user_email = session.get('email')
+            user = mongo.db.user.find_one({'email': user_email})
+            print("weekly goal test: ", user)
             # Fetch the meetings where the student ID matches the profile's _id
             upcoming_meetings = list(mongo.db.meetings.find({
-                "student_id": str(student["_id"]) # Using the ObjectId directly
+                "student_id": str(student["_id"])  # Using the ObjectId directly
             }).sort("created_at", -1).limit(5))
-            print("upc",upcoming_meetings)
+            print("Upcoming Meetings:", upcoming_meetings)
+
             # List of exercises (example data)
             exercises = [
                 {"id": 1, "name": "Yoga"},
                 {"id": 2, "name": "Swimming"},
             ]
+
+            # Fetch the user's weekly progress data
+            # Calculate the weekly progress percentage (similar to weekly_goal)
+            weekly_progress = user.get('weekly_progress', {day: None for day in [
+                'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']})
+            done_count = sum(1 for status in weekly_progress.values() if status == "Done")
+            not_done_count = sum(1 for status in weekly_progress.values() if status == "Not Done")
+            total_count = done_count + not_done_count
+            progress_percentage = int((done_count / 7) * 100) if total_count > 0 else 0
+            print("dashboard: ", progress_percentage)
+
         else:
+            # If no student is found, set defaults
             upcoming_meetings = []
             exercises = []
+            progress_percentage = 0
     else:
+        # If no email is found in session, set defaults
         upcoming_meetings = []
         exercises = []
+        progress_percentage = 0
 
-    return render_template('dashboard.html', title='Dashboard', exercises=exercises, upcoming_meetings = upcoming_meetings)
-
+    # Render the dashboard with the progress percentage
+    return render_template('dashboard.html', title='Dashboard', exercises=exercises, 
+                           upcoming_meetings=upcoming_meetings, progress_percentage=progress_percentage)
 
 @app.route('/add_favorite', methods=['POST'])
 def add_favorite():
