@@ -216,6 +216,9 @@ def feeling_and_goal():
         if already_submitted_today:
             return redirect(url_for('feeling_tracker'))
 
+        # Get user's goal progress (assuming it's stored as a percentage or some other metric)
+        goal_progress = user.get('goal_progress', 0)  # Default to 0 if no progress is stored
+
     if request.method == 'POST':
         feeling = request.form.get('feeling')  # Get the feeling value from the hidden input field
 
@@ -234,7 +237,7 @@ def feeling_and_goal():
         else:
             return redirect(url_for('dashboard'))
 
-    return render_template('feeling_and_goal.html', title='Your Feelings and Goals')
+    return render_template('feeling_and_goal.html', title='Your Feelings and Goals', goal_progress=goal_progress)
 
 @app.route("/feeling_tracker")
 def feeling_tracker():
