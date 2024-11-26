@@ -81,6 +81,17 @@
       </div>
     </a>
   </div>
+
+  <!-- Progress Bar for Weekly Goal (Centered with Heading) -->
+      <div class="container mt-5 text-center">
+        <h4 class="text-white">Weekly Goal Progress</h4>
+        <div class="progress" style="height: 40px; max-width: 50%; margin: auto;">
+          <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+            {{ progress_percentage }}%
+          </div>
+        </div>
+      </div>
+  
   <!-- Recipes Recommendation Link -->
 <div class="container site-section mt-5" id="recipes-recommendation">
   <h4 class="text-center text-warning">🍽️ Recipes Recommendation</h4>
@@ -101,16 +112,6 @@
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
     }
   </style>
-  
-      <!-- Progress Bar for Weekly Goal (Centered with Heading) -->
-      <div class="container mt-5 text-center">
-        <h4 class="text-white">Weekly Goal Progress</h4>
-        <div class="progress" style="height: 40px; max-width: 50%; margin: auto;">
-          <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
-            {{ progress_percentage }}%
-          </div>
-        </div>
-      </div>
   
       <!-- Upcoming Meetings Section -->
       <div class="container mt-5">
