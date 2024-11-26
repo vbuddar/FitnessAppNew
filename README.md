@@ -4,57 +4,58 @@
 <br>
 <br>
 
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/vbuddar/FitnessAppNew.svg)](https://github.com/vbuddar/FitnessAppNew/blob/main/LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14027020.svg)](https://doi.org/10.5281/zenodo.14027020)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-![GitHub last commit (branch)](https://img.shields.io/github/last-commit/SEFall24-Team61/FitnessAppNew/main)
-[![Python application](https://github.com/VibhavDeo/FitnessApp/actions/workflows/python-app.yml/badge.svg)](https://github.com/VibhavDeo/FitnessApp/actions/workflows/python-app.yml)
-[![Lint](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/syntax_checker.yml/badge.svg)](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/syntax_checker.yml)
-[![Pylint](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/pylint.yml/badge.svg)](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/pylint.yml)
-[![Tests On Push](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/unit_test.yml/badge.svg)](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/unit_test.yml)
-[![Code Coverage](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/code_cov.yml/badge.svg)](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/code_cov.yml)
-![GitHub code size in bytes](https://img.shields.io/github/repo-size/SEFall24-Team61/FitnessAppNew)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/vbuddar/FitnessAppNew/main)
+[![Python application](https://github.com/vbuddar/FitnessAppNew/actions/workflows/python-app.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/python-app.yml)
+[![Lint](https://github.com/vbuddar/FitnessAppNew/actions/workflows/syntax_checker.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/syntax_checker.yml)
+[![Pylint](https://github.com/vbuddar/FitnessAppNew/actions/workflows/pylint.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/pylint.yml)
+[![Tests On Push](https://github.com/vbuddar/FitnessAppNew/actions/workflows/unit_test.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/unit_test.yml)
+[![Code Coverage](https://github.com/vbuddar/FitnessAppNew/actions/workflows/code_cov.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/code_cov.yml)
+![GitHub code size in bytes](https://img.shields.io/github/repo-size/vbuddar/FitnessAppNew)
 
 <!--Badges-->
 <!-- Forks -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/fork" target="blank">
-  <img src="https://img.shields.io/github/forks/SEFall24-Team61/FitnessAppNew?style=flat-square" alt="FitnessAppNew forks"/>
+<a href="https://github.com/vbuddar/FitnessAppNew/fork" target="blank">
+  <img src="https://img.shields.io/github/forks/vbuddar/FitnessAppNew?style=flat-square" alt="FitnessAppNew forks"/>
 </a>
 
 <!-- Stars -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/stargazers" target="blank">
-  <img src="https://img.shields.io/github/stars/SEFall24-Team61/FitnessAppNew?style=flat-square" alt="FitnessAppNew stars"/>
+<a href="https://github.com/vbuddar/FitnessAppNew/stargazers" target="blank">
+  <img src="https://img.shields.io/github/stars/vbuddar/FitnessAppNew?style=flat-square" alt="FitnessAppNew stars"/>
 </a>
 
 <!-- Open Issues -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/issues" target="blank">
-  <img src="https://img.shields.io/github/issues/SEFall24-Team61/FitnessAppNew?style=flat-square" alt="FitnessAppNew open issues"/>
+<a href="https://github.com/vbuddar/FitnessAppNew/issues" target="blank">
+  <img src="https://img.shields.io/github/issues/vbuddar/FitnessAppNew?style=flat-square" alt="FitnessAppNew open issues"/>
 </a>
 
 <!-- Closed Issues -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/issues?q=is%3Aissue+is%3Aclosed" target="blank">
-  <img src="https://img.shields.io/github/issues-closed/SEFall24-Team61/FitnessAppNew" alt="FitnessAppNew closed issues"/>
+<a href="https://github.com/vbuddar/FitnessAppNew/issues?q=is%3Aissue+is%3Aclosed" target="blank">
+  <img src="https://img.shields.io/github/issues-closed/vbuddar/FitnessAppNew" alt="FitnessAppNew closed issues"/>
 </a>
 
 <!-- Pull Requests -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/pulls" target="blank">
-  <img src="https://img.shields.io/github/issues-pr/SEFall24-Team61/FitnessAppNew?style=flat-square" alt="FitnessAppNew pull requests"/>
+<a href="https://github.com/vbuddar/FitnessAppNew/pulls" target="blank">
+  <img src="https://img.shields.io/github/issues-pr/vbuddar/FitnessAppNew?style=flat-square" alt="FitnessAppNew pull requests"/>
 </a>
 
 <!-- Contributors -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/graphs/contributors" target="blank">
-  <img src="https://img.shields.io/github/contributors/SEFall24-Team61/FitnessAppNew" alt="FitnessAppNew contributors"/>
+<a href="https://github.com/vbuddar/FitnessAppNew/graphs/contributors" target="blank">
+  <img src="https://img.shields.io/github/contributors/vbuddar/FitnessAppNew" alt="FitnessAppNew contributors"/>
 </a>
 
 <!-- Commit Activity -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/graphs/commit-activity" target="blank">
-  <img src="https://img.shields.io/github/commit-activity/w/SEFall24-Team61/FitnessAppNew" alt="FitnessAppNew weekly commit activity"/>
+<a href="https://github.com/vbuddar/FitnessAppNew/graphs/commit-activity" target="blank">
+  <img src="https://img.shields.io/github/commit-activity/w/vbuddar/FitnessAppNew" alt="FitnessAppNew weekly commit activity"/>
 </a>
 
 <!-- Repository Size -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew" target="blank">
-  <img src="https://img.shields.io/github/repo-size/SEFall24-Team61/FitnessAppNew" alt="FitnessAppNew repository size"/>
+<a href="https://github.com/vbuddar/FitnessAppNew" target="blank">
+  <img src="https://img.shields.io/github/repo-size/vbuddar/FitnessAppNew" alt="FitnessAppNew repository size"/>
 </a>
+
 
 # BurnOut
 
@@ -103,6 +104,14 @@ https://github.com/user-attachments/assets/23fbcd81-6461-4fec-9066-f7af804c861f
     
 22. **Friends & Community Support:** Connect with friends within the app, accept friend requests, and share your daily progress to support and motivate each other in achieving your fitness goals.
 
+23. **Goal Setting & Reminders**: Allow users to set specific fitness goals and enable push notifications to remind them of their goals or scheduled workouts.
+
+24.**Mood Tracker**: Includes a mood tracking option so users can log how they feel before or after workouts for better self-awareness.
+
+25.**Recipe Suggestions**: Provides a rotating selection of simple, healthy recipes or snacks within the app for users to try based on their fitness goals.
+
+26. **Recipe Suggestions based on ingredient**: Provides recipe suggestions based on ingredient.
+27. **Trending Recipes**: Provides trending recipes based on user interactions.
 
 This document serves as a comprehensive reference point for users, giving them insight into the functionalities of BurnOut and encouraging them to participate in its development as an open-source software project. As an open-source project, the community can contribute additional features and enhancements to make BurnOut even more robust and tailored to individual needs before its official market release. Furthermore, it assists developers by providing a clear understanding of the codebase and serves as a valuable resource for the project's continued development.
 
@@ -144,6 +153,7 @@ This document serves as a comprehensive reference point for users, giving them i
 - Accessible to everyone and easy to use.
 - Register as a coach and guide students.
 - Get personalized workouts and diet plan from coaches.
+- Ger personalized recipes suggestions
 
 # TechStack Used for the Development of Project
 
@@ -153,67 +163,67 @@ This document serves as a comprehensive reference point for users, giving them i
 <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-plain.svg" alt="css" width="20" height="20"> HTML 5 </br>
 
 # Core Functionalities of the Application
+# Steps for execution
 
 ## Login
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/loginPic.PNG">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/loginPic.PNG">
 
 ## Dashboard
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/dashboardPic.PNG">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/dashboardPic.PNG">
 
 ## Exercise Section
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/excercisePic.PNG">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/excercisePic.PNG">
 
 ## Enter Calories
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/historyPic.PNG">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/historyPic.PNG">
 
 ## Enter Water Intakes
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/water.PNG">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/water.PNG">
 
 ## View User Profile
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/profile1.0.jpeg">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/profile1.0.jpeg">
 
 # #
 # New features added #
 
 ## Progress Monitor
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/progressMonitorPic.png">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/progressMonitorPic.png">
 
 ## Wellness Log
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/wellnessLogPic.png">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/wellnessLogPic.png">
 
 ## Workout Streak
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/workoutstreakPic.png">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/workoutstreakPic.png">
 
 ## Workout recommender
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/recommenderPic.png">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/recommenderPic.png">
 
 ## Community
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/friendsPic.png">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/friendsPic.png">
 
 ## Signup As Coach
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/new_signup.png">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/new_signup.png">
 
 ## Get Personalized Workouts
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/personalized_workouts.png">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/personalized_workouts.png">
 
 ## Track Student Progress
 
-<img src="https://raw.githubusercontent.com/SEFall24-Team61/FitnessAppNew/main/static/img/student_progress.png">
+<img src="https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/img/student_progress.png">
 
-# Steps for execution
 
 Step 1:
 Install MongoDB using the following link:
@@ -227,11 +237,11 @@ https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/
 Step 2:
 Git Clone the Repository
 
-    git clone https://github.com/SEFall24-Team61/FitnessAppNew.git
+    git clone https://github.com/vbuddar/FitnessAppNew/tree/main
 
 (OR) Download the .zip file on your local machine
 
-    https://github.com/SEFall24-Team61/FitnessAppNew.git
+    https://github.com/vbuddar/FitnessAppNew/tree/main
 
 Step 3:
 Install the required packages by running the following command in the terminal
@@ -257,7 +267,7 @@ If you get error regarding any of the following packages - pymongo and bson, the
 # Source Code
 
 Link to the repository:
-https://github.com/token1029/FitnessApp
+https://github.com/vbuddar/FitnessAppNew/tree/main
 
 ## Total code coverage
 
@@ -265,12 +275,6 @@ Stmts -> 1511
 Coverage -> 71%
 
 # Future Scope
-
-**Goal Setting & Reminders:** Allow users to set specific fitness goals and enable push notifications to remind them of their goals or scheduled workouts.
-
-**Mood Tracker:** Include a mood tracking option so users can log how they feel before or after workouts for better self-awareness.
-
-**Recipe Suggestions:** Provide a rotating selection of simple, healthy recipes or snacks within the app for users to try based on their fitness goals.
 
 **Customizable Dashboard:** Let users customize their dashboard with their most-used features, like calorie tracking, hydration, workout logs etc.
 
@@ -280,20 +284,20 @@ Coverage -> 71%
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/LuDraa"><img src="https://avatars.githubusercontent.com/u/143905092?v=4" width="75px;" alt=""/><br /><sub><b>Shardul Khare</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/shrutid02"><img src="https://avatars.githubusercontent.com/u/143905049?v=4" width="75px;" alt=""/><br /><sub><b>Shruti Dhond</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/pranavman11"><img src="https://avatars.githubusercontent.com/u/38797209?v=4" width="75px;" alt=""/><br /><sub><b>Pranav Manbhekar</b></sub></a></td>
+    <td align="center"><a href="https://github.com/vbuddar"><img src="https://avatars.githubusercontent.com/u/143905092?v=4" width="75px;" alt=""/><br /><sub><b>Naga Buddarapu</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/vbuddar"><img src="https://avatars.githubusercontent.com/u/143905049?v=4" width="75px;" alt=""/><br /><sub><b>Youbin Kim</b></sub></a><br /></td>
+
   </tr>
 </table>
 
 # Contribution
 
-Please refer the [CONTRIBUTING.md](https://github.com/SEFall24-Team61/FitnessAppNew/blob/main/CONTRIBUTING.md) file for instructions on how to contribute to our repository.
+Please refer the [CONTRIBUTING.md](https://github.com/vbuddar/FitnessAppNew/blob/main/CONTRIBUTING.md) file for instructions on how to contribute to our repository.
 
   <p align="center">
-    <a href="https://github.com/SEFall24-Team61/FitnessAppNew/issues/new/choose">Report Bug</a>
+    <a href="https://github.com/vbuddar/FitnessAppNew/issues">Report Bug</a>
     /
-    <a href="https://github.com/SEFall24-Team61/FitnessAppNew/issues/new/choose">Request Feature</a>
+    <a href="https://github.com/vbuddar/FitnessAppNew/issues">Request Feature</a>
   </p>
 
 # License
