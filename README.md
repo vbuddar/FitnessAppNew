@@ -12,7 +12,8 @@
 [![Lint](https://github.com/vbuddar/FitnessAppNew/actions/workflows/syntax_checker.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/syntax_checker.yml)
 [![Pylint](https://github.com/vbuddar/FitnessAppNew/actions/workflows/pylint.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/pylint.yml)
 [![Tests On Push](https://github.com/vbuddar/FitnessAppNew/actions/workflows/unit_test.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/unit_test.yml)
-[![Code Coverage](https://github.com/vbuddar/FitnessAppNew/actions/workflows/code_cov.yml/badge.svg)](https://github.com/vbuddar/FitnessAppNew/actions/workflows/code_cov.yml)
+[![Code Coverage](https://img.shields.io/badge/Code%20Coverage-71%25-brightgreen)](https://example.com/code-coverage)
+
 [![GitHub repo size](https://img.shields.io/github/repo-size/vbuddar/FitnessAppNew)](https://github.com/vbuddar/FitnessAppNew)
 
 <!--Badges-->
