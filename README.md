@@ -3,6 +3,8 @@
 [Link](https://drive.google.com/file/d/1JrFG1_1Hd8auymBR45ZmKW4HuM_TYOi6/view?usp=sharing)
 <br>
 <br>
+![Code Coverage](https://raw.githubusercontent.com/vbuddar/FitnessAppNew/main/static/code-coverage.svg)
+
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://img.shields.io/badge/Code%20Coverage-71%25-brightgreen)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14027020.svg)](https://doi.org/10.5281/zenodo.14027020)
 [![Made with Python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
