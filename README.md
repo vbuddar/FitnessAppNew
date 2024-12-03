@@ -28,7 +28,6 @@
 ![Release](https://img.shields.io/github/v/release/SurajRKU/SE_PROJECT_GRP_12)
 ![Build](https://img.shields.io/badge/build-passing-green)
 [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
-[![GitHub repo size](https://img.shields.io/github/repo-size/vbuddar/FitnessAppNew)](https://github.com/vbuddar/FitnessAppNew)
 
 <!--Badges-->
 <!-- Forks -->
