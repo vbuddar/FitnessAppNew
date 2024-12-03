@@ -29,47 +29,6 @@
 ![Build](https://img.shields.io/badge/build-passing-green)
 [![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 
-<!--Badges-->
-<!-- Forks -->
-<a href="https://github.com/vbuddar/FitnessAppNew/fork" target="blank">
-  <img src="https://img.shields.io/github/forks/vbuddar/FitnessAppNew?style=flat-square" alt="FitnessAppNew forks"/>
-</a>
-
-<!-- Stars -->
-<a href="https://github.com/vbuddar/FitnessAppNew/stargazers" target="blank">
-  <img src="https://img.shields.io/github/stars/vbuddar/FitnessAppNew?style=flat-square" alt="FitnessAppNew stars"/>
-</a>
-
-<!-- Open Issues -->
-<a href="https://github.com/vbuddar/FitnessAppNew/issues" target="blank">
-  <img src="https://img.shields.io/github/issues/vbuddar/FitnessAppNew?style=flat-square" alt="FitnessAppNew open issues"/>
-</a>
-
-<!-- Closed Issues -->
-<a href="https://github.com/vbuddar/FitnessAppNew/issues?q=is%3Aissue+is%3Aclosed" target="blank">
-  <img src="https://img.shields.io/github/issues-closed/vbuddar/FitnessAppNew" alt="FitnessAppNew closed issues"/>
-</a>
-
-<!-- Pull Requests -->
-<a href="https://github.com/vbuddar/FitnessAppNew/pulls" target="blank">
-  <img src="https://img.shields.io/github/issues-pr/vbuddar/FitnessAppNew?style=flat-square" alt="FitnessAppNew pull requests"/>
-</a>
-
-<!-- Contributors -->
-<a href="https://github.com/vbuddar/FitnessAppNew/graphs/contributors" target="blank">
-  <img src="https://img.shields.io/github/contributors/vbuddar/FitnessAppNew" alt="FitnessAppNew contributors"/>
-</a>
-
-<!-- Commit Activity -->
-<a href="https://github.com/vbuddar/FitnessAppNew/graphs/commit-activity" target="blank">
-  <img src="https://img.shields.io/github/commit-activity/w/vbuddar/FitnessAppNew" alt="FitnessAppNew weekly commit activity"/>
-</a>
-
-<!-- Repository Size -->
-<a href="https://github.com/vbuddar/FitnessAppNew" target="blank">
-  <img src="https://img.shields.io/github/repo-size/vbuddar/FitnessAppNew" alt="FitnessAppNew repository size"/>
-</a>
-
 
 # BurnOut
 
