@@ -4,57 +4,31 @@
 <br>
 <br>
 
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14027020.svg)](https://doi.org/10.5281/zenodo.14027020)
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-![GitHub last commit (branch)](https://img.shields.io/github/last-commit/SEFall24-Team61/FitnessAppNew/main)
-[![Python application](https://github.com/VibhavDeo/FitnessApp/actions/workflows/python-app.yml/badge.svg)](https://github.com/VibhavDeo/FitnessApp/actions/workflows/python-app.yml)
-[![Lint](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/syntax_checker.yml/badge.svg)](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/syntax_checker.yml)
-[![Pylint](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/pylint.yml/badge.svg)](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/pylint.yml)
-[![Tests On Push](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/unit_test.yml/badge.svg)](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/unit_test.yml)
-[![Code Coverage](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/code_cov.yml/badge.svg)](https://github.com/SEFall24-Team61/FitnessAppNew/actions/workflows/code_cov.yml)
-![GitHub code size in bytes](https://img.shields.io/github/repo-size/SEFall24-Team61/FitnessAppNew)
-
-<!--Badges-->
-<!-- Forks -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/fork" target="blank">
-  <img src="https://img.shields.io/github/forks/SEFall24-Team61/FitnessAppNew?style=flat-square" alt="FitnessAppNew forks"/>
-</a>
-
-<!-- Stars -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/stargazers" target="blank">
-  <img src="https://img.shields.io/github/stars/SEFall24-Team61/FitnessAppNew?style=flat-square" alt="FitnessAppNew stars"/>
-</a>
-
-<!-- Open Issues -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/issues" target="blank">
-  <img src="https://img.shields.io/github/issues/SEFall24-Team61/FitnessAppNew?style=flat-square" alt="FitnessAppNew open issues"/>
-</a>
-
-<!-- Closed Issues -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/issues?q=is%3Aissue+is%3Aclosed" target="blank">
-  <img src="https://img.shields.io/github/issues-closed/SEFall24-Team61/FitnessAppNew" alt="FitnessAppNew closed issues"/>
-</a>
-
-<!-- Pull Requests -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/pulls" target="blank">
-  <img src="https://img.shields.io/github/issues-pr/SEFall24-Team61/FitnessAppNew?style=flat-square" alt="FitnessAppNew pull requests"/>
-</a>
-
-<!-- Contributors -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/graphs/contributors" target="blank">
-  <img src="https://img.shields.io/github/contributors/SEFall24-Team61/FitnessAppNew" alt="FitnessAppNew contributors"/>
-</a>
-
-<!-- Commit Activity -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew/graphs/commit-activity" target="blank">
-  <img src="https://img.shields.io/github/commit-activity/w/SEFall24-Team61/FitnessAppNew" alt="FitnessAppNew weekly commit activity"/>
-</a>
-
-<!-- Repository Size -->
-<a href="https://github.com/SEFall24-Team61/FitnessAppNew" target="blank">
-  <img src="https://img.shields.io/github/repo-size/SEFall24-Team61/FitnessAppNew" alt="FitnessAppNew repository size"/>
-</a>
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10212033.svg)](https://doi.org/10.5281/zenodo.10212033)
+![Python](https://img.shields.io/badge/Python-3.10.12-blueviolet)
+![Framework](https://img.shields.io/badge/Framework-Flask-red)
+![Frontend](https://img.shields.io/badge/Frontend-HTML/CSS/JS-green)
+![Static Badge](https://img.shields.io/badge/Database-MongoDB-pink)
+![Coverage](https://img.shields.io/badge/coverage-97%25-brightgreen)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://gitHub.com/SurajRKU/SE_PROJECT_GRP_12/graphs/commit-activity) 
+[![Contributors Activity](https://img.shields.io/github/commit-activity/m/kgudipe/SE_PROJ)](https://github.com/SurajRKU/SE_PROJECT_GRP_12/pulse) 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
+[![Issues](https://img.shields.io/github/issues/SurajRKU/SE_PROJECT_GRP_12)](https://GitHub.com/SurajRKU/SE_PROJECT_GRP_12/)
+[![Issues Closed](https://img.shields.io/github/issues-closed/SurajRKU/SE_PROJECT_GRP_12)](https://GitHub.com/SurajRKU/SE_PROJECT_GRP_12/)
+[![black](https://img.shields.io/badge/StyleChecker-black-purple.svg)](https://pypi.org/project/black/)
+![33.5 kB](https://img.shields.io/github/languages/code-size/SurajRKU/SE_PROJECT_GRP_12) ![Language](https://img.shields.io/badge/Language-Python-blue) 
+![last commit](https://img.shields.io/github/last-commit/SurajRKU/SE_PROJECT_GRP_12)
+[![Repo Size](https://img.shields.io/github/repo-size/SurajRKU/SE_PROJECT_GRP_12?color=brightgreen)](https://github.com/SurajRKU/SE_PROJECT_GRP_12.git)
+[![contributors](https://img.shields.io/github/contributors/SurajRKU/SE_PROJECT_GRP_12)](https://github.com/SurajRKU/SE_PROJECT_GRP_12/graphs/contributors)
+[![GitHub release](https://img.shields.io/github/tag/SurajRKU/SE_PROJECT_GRP_12.svg )](https://github.com/SurajRKU/SE_PROJECT_GRP_12/tags)
+[![file_count](https://img.shields.io/github/directory-file-count/SurajRKU/SE_PROJECT_GRP_12)](https://GitHub.com/SurajRKU/SE_PROJECT_GRP_12/)
+[![language_count](https://img.shields.io/github/languages/count/SurajRKU/SE_PROJECT_GRP_12)](https://GitHub.com/SurajRKU/SE_PROJECT_GRP_12/)
+![GitHub all releases](https://img.shields.io/github/downloads/SurajRKU/SE_PROJECT_GRP_12/total)
+[![Top Language](https://img.shields.io/github/languages/top/SurajRKU/SE_PROJECT_GRP_12)](https://GitHub.com/SurajRKU/SE_PROJECT_GRP_12/)
+![Release](https://img.shields.io/github/v/release/SurajRKU/SE_PROJECT_GRP_12)
+![Build](https://img.shields.io/badge/build-passing-green)
+[![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 
 # BurnOut
 
